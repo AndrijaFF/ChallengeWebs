@@ -50,7 +50,7 @@ const EditEvent = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className='editForm' onSubmit={handleSubmit}>
             <h1>Modifier l'événement</h1>
             <input
                 type="text"

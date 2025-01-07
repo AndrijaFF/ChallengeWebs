@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import SearchBar from '../components/SearchBar'; // Ajustez le chemin selon l'emplacement réel de SearchBar.jsx
+import SearchBar from '../components/SearchBar'; 
 
 const Events = () => {
     const [events, setEvents] = useState([]);
     const [userRegistrations, setUserRegistrations] = useState([]);
-    const [filteredEvents, setFilteredEvents] = useState([]); // Pour stocker les événements filtrés
-    const [editingEvent, setEditingEvent] = useState(null); // État pour gérer l'édition d'événements
+    const [filteredEvents, setFilteredEvents] = useState([]);
+    const [editingEvent, setEditingEvent] = useState(null); 
     const { user } = useAuth();
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const Events = () => {
                 }
                 const data = await response.json();
                 setEvents(data);
-                setFilteredEvents(data); // Initialiser avec tous les événements
+                setFilteredEvents(data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des événements :', error);
             }
@@ -120,10 +120,10 @@ const Events = () => {
         }
     };
 
-     return (
+    return (
         <div>
             <h1>Liste des événements</h1>
-            <SearchBar onSearch={handleSearch} /> {/* Ajout de la barre de recherche */}
+            <SearchBar onSearch={handleSearch} />
             <ul>
                 {filteredEvents.length > 0 ? (
                     filteredEvents.map((event) => (
@@ -140,6 +140,13 @@ const Events = () => {
                                 user?.id_user !== event.created_by && (
                                     <button className="button" onClick={() => handleRegister(event.id_event)}>S'inscrire</button>
                                 )
+                            )}
+                            {/* Boutons pour modifier et supprimer, uniquement si c'est l'organisateur */}
+                            {user?.id_user === event.created_by && (
+                                <div>
+                                    <button className="button" onClick={() => handleEdit(event.id_event)}>Modifier</button>
+                                    <button className="button" onClick={() => handleDelete(event.id_event)}>Supprimer</button>
+                                </div>
                             )}
                         </li>
                     ))
