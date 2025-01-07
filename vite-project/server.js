@@ -56,7 +56,7 @@ app.post('/login', async (req, res) => {
         }
 
         const user = rows[0];
-        res.status(200).json(user); // Vérifiez que l'objet retourné contient id_user
+        res.status(200).json(user); 
     } catch (err) {
         console.error('Erreur SQL :', err);
         res.status(500).json({ message: 'Erreur lors de la connexion.' });
@@ -64,7 +64,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/events', async (req, res) => {
-    console.log('Données reçues dans la requête POST :', req.body); // Log pour vérifier les données
+    console.log('Données reçues dans la requête POST :', req.body); 
 
     const { event_name, description, location, date_event, max_participants, created_by } = req.body;
 
@@ -126,20 +126,17 @@ app.post('/registrations', async (req, res) => {
     }
 
     try {
-        // Vérifiez si l'utilisateur est déjà inscrit à cet événement
         const [existing] = await db.query('SELECT * FROM registrations WHERE id_event = ? AND id_user = ?', [id_event, id_user]);
         if (existing.length > 0) {
             return res.status(400).json({ message: 'Vous êtes déjà inscrit à cet événement.' });
         }
 
-        // Vérifiez le nombre maximum de participants
         const [event] = await db.query('SELECT max_participants FROM events WHERE id_event = ?', [id_event]);
         const [registrations] = await db.query('SELECT COUNT(*) AS count FROM registrations WHERE id_event = ?', [id_event]);
         if (registrations[0].count >= event[0].max_participants) {
             return res.status(400).json({ message: 'Le nombre maximum de participants a été atteint.' });
         }
 
-        // Inscrire l'utilisateur
         await db.execute('INSERT INTO registrations (id_user, id_event, registered_at) VALUES (?, ?, NOW())', [id_user, id_event]);
         res.status(201).json({ message: 'Inscription réussie.' });
     } catch (err) {
@@ -150,17 +147,15 @@ app.post('/registrations', async (req, res) => {
 
 app.delete('/events/:id', async (req, res) => {
     const eventId = req.params.id;
-    const { userId } = req.body; // ID de l'organisateur connecté
+    const { userId } = req.body; 
 
     try {
-        // Vérifiez si l'utilisateur est bien le créateur de l'événement
         const [rows] = await db.execute('SELECT * FROM events WHERE id_event = ? AND created_by = ?', [eventId, userId]);
         
         if (rows.length === 0) {
             return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à supprimer cet événement.' });
         }
 
-        // Supprimer l'événement
         await db.execute('DELETE FROM events WHERE id_event = ?', [eventId]);
         res.status(200).json({ message: 'Événement supprimé avec succès.' });
     } catch (err) {
@@ -170,7 +165,7 @@ app.delete('/events/:id', async (req, res) => {
 });
 
 app.put('/events/:id', async (req, res) => {
-    const eventId = req.params.id;
+    const eventId = req.params.id; 
     const { event_name, description, location, date_event, max_participants, userId } = req.body;
 
     try {
@@ -188,7 +183,7 @@ app.put('/events/:id', async (req, res) => {
         await db.execute(query, [event_name, description, location, date_event, max_participants, eventId]);
 
         const [updatedEvent] = await db.query('SELECT * FROM events WHERE id_event = ?', [eventId]);
-        res.status(200).json(updatedEvent[0]); // Retourne l'événement mis à jour
+        res.status(200).json(updatedEvent[0]);
     } catch (err) {
         console.error('Erreur SQL :', err);
         res.status(500).json({ message: 'Erreur lors de la modification de l\'événement.' });

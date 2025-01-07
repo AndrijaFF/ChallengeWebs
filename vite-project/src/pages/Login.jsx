@@ -38,7 +38,7 @@ const Login = () => {
     };
 
     return (
-        <form className="form-register" onSubmit={handleSubmit}>
+        <form className="form-login" onSubmit={handleSubmit}>
             <h2>Connexion</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <input

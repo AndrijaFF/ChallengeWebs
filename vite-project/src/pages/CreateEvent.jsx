@@ -56,7 +56,7 @@ const CreateEvent = () => {
     };
     
     return (
-        <form onSubmit={handleSubmit}>
+        <form id='createForm' onSubmit={handleSubmit}>
             <h1>Créer un événement</h1>
             <input
                 type="text"

@@ -1,4 +1,3 @@
-/* Import de la police Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 body {
@@ -145,29 +144,28 @@ header span {
   color: #ffffff;
   border-color: #ffffff;
 }
-/* Lorsque le Dark Mode est activé */
+
 body.darkmode {
-  background-color: #121212; /* Couleur de fond sombre */
-  color: #ffffff; /* Texte en blanc */
+  background-color: #121212; 
+  color: #ffffff; 
 }
 
-/* Style spécifique pour le header en Dark Mode */
 body.darkmode header {
-  background-color: #1e1e1e; /* Fond du header en mode sombre */
+  background-color: #1e1e1e; 
   border-bottom: 1px solid #444;
 }
 
 body.darkmode header h1 {
-  color: #ffffff; /* Titre du header en blanc */
+  color: #ffffff; 
 }
 
 body.darkmode header span {
-  color: #ffffff; /* Texte du message de bienvenue en blanc */
+  color: #ffffff; 
 }
 
 body.darkmode .button {
   background-color: #333;
-  color: #ffffff; /* Boutons en blanc */
+  color: #ffffff;
 }
 
 body.darkmode .button:hover {
@@ -176,21 +174,18 @@ body.darkmode .button:hover {
 
 body.darkmode .darkmode-button {
   background-color: #ffffff;
-  color: #ffffff; /* Bouton Dark Mode inversé pour contraste */
+  color: #ffffff;
 }
 
 body.darkmode .darkmode-button:hover {
   background-color: #333;
-  color: #ffffff; /* Inverser au survol */
+  color: #ffffff; 
 }
-/* Style global pour le formulaire */
 form {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 500px;
   margin: 50px auto;
   padding: 20px;
   background-color: #ffffff;
@@ -198,10 +193,12 @@ form {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.editForm {
+ #createForm {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width:100%;
+  max-width: 500px;
   justify-content: center;
   margin: 50px auto;
   padding: 20px;
@@ -210,6 +207,7 @@ form {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 /* Titre du formulaire */
 form h1 {
   font-size: 1.8rem;
@@ -233,17 +231,15 @@ form textarea {
 
 form input:focus,
 form textarea:focus {
-  border-color: #ffc267; /* Couleur d'accentuation */
+  border-color: #ffc267; 
   outline: none;
 }
 
-/* Champ de texte (textarea) */
 form textarea {
   resize: vertical;
   height: 100px;
 }
 
-/* Bouton de soumission */
 form button {
   width: 100%;
   padding: 10px;
@@ -260,7 +256,6 @@ form button:hover {
   background-color: #ffad32;
 }
 
-/* Style global pour la liste des événements */
 h1 {
   text-align: center;
   margin-bottom: 20px;
@@ -274,10 +269,9 @@ ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px; /* Espace entre les cards */
+  gap: 20px;
 }
 
-/* Style pour chaque card */
 li {
   background-color: #ffffff;
   border: 1px solid #ddd;
@@ -306,10 +300,9 @@ p {
   margin-bottom: 8px;
 }
 
-/* Accentuer les informations importantes */
 p:last-child {
   font-weight: bold;
-  color: #ffc267; /* Couleur d'accentuation */
+  color: #ffc267; 
 }
 
 

@@ -19,24 +19,25 @@ const EditEvent = () => {
             try {
                 const response = await fetch(`http://localhost:5000/events/${id}`);
                 const data = await response.json();
-                setFormData(data);
+                setFormData(data); 
             } catch (err) {
                 console.error('Erreur lors de la récupération de l\'événement :', err);
             }
         };
-
+    
         fetchEvent();
     }, [id]);
+    
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); 
         try {
             const response = await fetch(`http://localhost:5000/events/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...formData, userId: user.id_user }),
             });
-
+    
             if (response.ok) {
                 alert('Événement modifié avec succès.');
                 navigate('/events');
@@ -48,6 +49,7 @@ const EditEvent = () => {
             console.error('Erreur réseau :', err);
         }
     };
+
 
     return (
         <form className='editForm' onSubmit={handleSubmit}>

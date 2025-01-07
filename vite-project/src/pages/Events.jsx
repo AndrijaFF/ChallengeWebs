@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import SearchBar from '../components/SearchBar'; 
+import { useNavigate } from 'react-router-dom';
 
 const Events = () => {
     const [events, setEvents] = useState([]);
@@ -8,6 +9,7 @@ const Events = () => {
     const [filteredEvents, setFilteredEvents] = useState([]);
     const [editingEvent, setEditingEvent] = useState(null); 
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -123,30 +125,74 @@ const Events = () => {
     return (
         <div>
             <h1>Liste des événements</h1>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar onSearch={(term) => {
+                const lowercasedTerm = term.toLowerCase();
+                const filtered = events.filter((event) =>
+                    event.event_name.toLowerCase().includes(lowercasedTerm) ||
+                    event.description.toLowerCase().includes(lowercasedTerm) ||
+                    event.location.toLowerCase().includes(lowercasedTerm)
+                );
+                setFilteredEvents(filtered);
+            }} />
             <ul>
                 {filteredEvents.length > 0 ? (
                     filteredEvents.map((event) => (
                         <li key={event.id_event}>
-                            <h3>{event.event_name}</h3>
-                            <p>{event.description}</p>
-                            <p>Lieu : {event.location}</p>
-                            <p>Date : {new Date(event.date_event).toLocaleDateString()}</p>
-                            <p>Nombre maximum de participants : {event.max_participants}</p>
-                            <p>Créé par : {event.created_by_name || 'Inconnu'}</p>
-                            {userRegistrations.includes(event.id_event) ? (
-                                <p>Inscrit</p>
+                            {editingEvent && editingEvent.id_event === event.id_event ? (
+                                <form onSubmit={handleUpdate}>
+                                    <input
+                                        type="text"
+                                        value={editingEvent.event_name}
+                                        onChange={(e) => setEditingEvent({ ...editingEvent, event_name: e.target.value })}
+                                        required
+                                    />
+                                    <textarea
+                                        value={editingEvent.description}
+                                        onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
+                                    />
+                                    <input
+                                        type="text"
+                                        value={editingEvent.location}
+                                        onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
+                                        required
+                                    />
+                                    <input
+                                        type="date"
+                                        value={editingEvent.date_event}
+                                        onChange={(e) => setEditingEvent({ ...editingEvent, date_event: e.target.value })}
+                                        required
+                                    />
+                                    <input
+                                        type="number"
+                                        value={editingEvent.max_participants}
+                                        onChange={(e) => setEditingEvent({ ...editingEvent, max_participants: e.target.value })}
+                                        required
+                                    />
+                                    <button type="submit" className='button'>Enregistrer</button>
+                                    <button type="button" className='button' onClick={() => setEditingEvent(null)}>Annuler</button>
+                                </form>
                             ) : (
-                                user?.id_user !== event.created_by && (
-                                    <button className="button" onClick={() => handleRegister(event.id_event)}>S'inscrire</button>
-                                )
-                            )}
-                            {/* Boutons pour modifier et supprimer, uniquement si c'est l'organisateur */}
-                            {user?.id_user === event.created_by && (
-                                <div>
-                                    <button className="button" onClick={() => handleEdit(event.id_event)}>Modifier</button>
-                                    <button className="button" onClick={() => handleDelete(event.id_event)}>Supprimer</button>
-                                </div>
+                                <>
+                                    <h3>{event.event_name}</h3>
+                                    <p>{event.description}</p>
+                                    <p>Lieu : {event.location}</p>
+                                    <p>Date : {new Date(event.date_event).toLocaleDateString()}</p>
+                                    <p>Participants max : {event.max_participants}</p>
+
+                                    {/* Affichage "Inscrit" ou bouton d'inscription */}
+                                    {userRegistrations.includes(event.id_event) ? (
+                                        <p>Inscrit</p>
+                                    ) : (
+                                        user?.id_user !== event.created_by && (
+                                            <button className='button' onClick={() => handleRegister(event.id_event)}>S'inscrire</button>
+                                        )
+                                    )}
+
+                                    {/* Bouton de modification */}
+                                    {user?.id_user === event.created_by && (
+                                        <button className='button' onClick={() => handleEdit(event)}>Modifier</button>
+                                    )}
+                                </>
                             )}
                         </li>
                     ))

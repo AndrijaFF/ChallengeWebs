@@ -39,7 +39,7 @@ const Register = () => {
     };
 
     return (
-        <form class="form-login" onSubmit={handleSubmit}>
+        <form class="form-register" onSubmit={handleSubmit}>
             <h2>Inscription</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <input
