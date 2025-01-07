@@ -1,0 +1,328 @@
+/* Import de la police Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0;
+    color: #333;
+}
+
+header div {
+    display: flex;
+    align-items: center;
+}
+
+header span {
+    margin-right: 15px;
+    font-size: 1rem;
+    color: #555;
+}
+
+.button {
+    
+    padding: 8px 12px;
+    margin-left: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #ffc267;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin-right:5px;
+}
+
+.button:hover {
+    background-color: #ffad32;
+}
+
+.form-register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  margin: 50px auto;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  margin: 50px auto;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-info {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.input-info:focus {
+  border-color: #ffc267;
+  outline: none;
+}
+
+
+.select-data {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.select-data:focus {
+  border-color: #ffc267;
+  outline: none;
+}
+
+.darkmode-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right:15px ;
+  background-color: #ffffff;
+  border: 2px solid #333;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+  font-size: 18px;
+  color: #333;
+  margin-left: 15px ;
+}
+
+.darkmode-button:hover {
+  background-color: #333;
+  color: #ffffff;
+  border-color: #ffffff;
+  transform: scale(1.1);
+}
+
+.darkmode-button.active {
+  background-color: #333;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+/* Lorsque le Dark Mode est activé */
+body.darkmode {
+  background-color: #121212; /* Couleur de fond sombre */
+  color: #ffffff; /* Texte en blanc */
+}
+
+/* Style spécifique pour le header en Dark Mode */
+body.darkmode header {
+  background-color: #1e1e1e; /* Fond du header en mode sombre */
+  border-bottom: 1px solid #444;
+}
+
+body.darkmode header h1 {
+  color: #ffffff; /* Titre du header en blanc */
+}
+
+body.darkmode header span {
+  color: #ffffff; /* Texte du message de bienvenue en blanc */
+}
+
+body.darkmode .button {
+  background-color: #333;
+  color: #ffffff; /* Boutons en blanc */
+}
+
+body.darkmode .button:hover {
+  background-color: #555;
+}
+
+body.darkmode .darkmode-button {
+  background-color: #ffffff;
+  color: #ffffff; /* Bouton Dark Mode inversé pour contraste */
+}
+
+body.darkmode .darkmode-button:hover {
+  background-color: #333;
+  color: #ffffff; /* Inverser au survol */
+}
+/* Style global pour le formulaire */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre du formulaire */
+form h1 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Champs d'entrée */
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+form input:focus,
+form textarea:focus {
+  border-color: #ffc267; /* Couleur d'accentuation */
+  outline: none;
+}
+
+/* Champ de texte (textarea) */
+form textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+/* Bouton de soumission */
+form button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  background-color: #ffc267;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #ffad32;
+}
+
+/* Style global pour la liste des événements */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Espace entre les cards */
+}
+
+/* Style pour chaque card */
+li {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* Accentuer les informations importantes */
+p:last-child {
+  font-weight: bold;
+  color: #ffc267; /* Couleur d'accentuation */
+}
+
+
+.search-bar {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #ffc267;
+  outline: none;
+}
