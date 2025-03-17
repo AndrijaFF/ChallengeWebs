@@ -9,7 +9,7 @@ const Header = () => {
     const [darkmodeInstance, setDarkmodeInstance] = useState(null);
 
     useEffect(() => {
-        console.log('Utilisateur connecté dans Header :', user); // Vérification des données utilisateur
+        console.log('Utilisateur connecté dans Header :', user); 
     }, [user]);
 
     const handleLogout = () => {
@@ -51,6 +51,10 @@ const Header = () => {
                                 Créer un événement
                             </button>
                         )}
+                    {}
+                    <button className="button" onClick={() => navigate('/history')}>
+                        Vos événement
+                    </button>
                         <button
                             className="darkmode-button"
                             onClick={toggleDarkMode}
@@ -62,6 +66,7 @@ const Header = () => {
                         <button onClick={handleLogout} className="button">
                             Déconnexion
                         </button>
+
                     </>
                 ) : (
                     <>

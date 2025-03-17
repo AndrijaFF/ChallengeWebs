@@ -1,0 +1,132 @@
+#history-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.history-title {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.history-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.history-section h2 {
+    font-size: 1.8rem;
+    color: #ffc267;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ffc267;
+    padding-bottom: 5px;
+}
+
+.history-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.event-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.event-title {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.event-description {
+    font-size: 1rem;
+    color: #555;
+}
+
+.event-location,
+.event-date,
+.event-participants {
+    font-size: 1rem;
+    color: #777;
+    margin-top: 5px;
+}
+
+.no-events {
+    text-align: center;
+    color: #888;
+    font-size: 1.2rem;
+    font-style: italic;
+    padding: 10px;
+}
+
+.button {
+    padding: 8px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #ffc267;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #ffad32;
+}
+
+body.darkmode #history-container {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+body.darkmode .history-section {
+    background-color: #2c2c2c;
+}
+
+body.darkmode .history-section h2 {
+    color: #ffc267;
+    border-bottom: 2px solid #ffc267;
+}
+
+body.darkmode .event-card {
+    background-color: #333;
+    border: 1px solid #555;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.darkmode .event-title,
+body.darkmode .event-description,
+body.darkmode .event-location,
+body.darkmode .event-date,
+body.darkmode .event-participants {
+    color: #ddd;
+}
+
+body.darkmode .no-events {
+    color: #bbb;
+}

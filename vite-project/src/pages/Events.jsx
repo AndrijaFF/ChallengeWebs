@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import SearchBar from '../components/SearchBar'; 
+import EventCard from '../components/EventCard'; // Import du composant
 import { useNavigate } from 'react-router-dom';
 
 const Events = () => {
     const [events, setEvents] = useState([]);
     const [userRegistrations, setUserRegistrations] = useState([]);
-    const [filteredEvents, setFilteredEvents] = useState([]);
-    const [editingEvent, setEditingEvent] = useState(null); 
+    const [filteredEvents, setFilteredEvents] = useState([]); 
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -45,16 +45,6 @@ const Events = () => {
         }
     }, [user]);
 
-    const handleSearch = (term) => {
-        const lowercasedTerm = term.toLowerCase();
-        const filtered = events.filter((event) =>
-            event.event_name.toLowerCase().includes(lowercasedTerm) ||
-            event.description.toLowerCase().includes(lowercasedTerm) ||
-            event.location.toLowerCase().includes(lowercasedTerm)
-        );
-        setFilteredEvents(filtered);
-    };
-
     const handleRegister = async (id_event) => {
         try {
             const response = await fetch(`http://localhost:5000/registrations`, {
@@ -76,16 +66,19 @@ const Events = () => {
     };
 
     const handleDelete = async (id_event) => {
+        if (!window.confirm("Voulez-vous vraiment supprimer cet événement ?")) return;
+    
         try {
             const response = await fetch(`http://localhost:5000/events/${id_event}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: user.id_user }),
             });
-
+    
             if (response.ok) {
                 alert('Événement supprimé avec succès.');
                 setEvents(events.filter(event => event.id_event !== id_event));
+                window.location.reload();
             } else {
                 const errorData = await response.json();
                 alert(errorData.message || 'Erreur lors de la suppression de l\'événement.');
@@ -95,24 +88,18 @@ const Events = () => {
         }
     };
 
-    const handleEdit = (event) => {
-        setEditingEvent(event); // Passer l'événement en mode édition
-    };
-
-    const handleUpdate = async (e) => {
-        e.preventDefault();
+    const handleUpdate = async (updatedEvent) => {
         try {
-            const response = await fetch(`http://localhost:5000/events/${editingEvent.id_event}`, {
+            const response = await fetch(`http://localhost:5000/events/${updatedEvent.id_event}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...editingEvent, userId: user.id_user }),
+                body: JSON.stringify({ ...updatedEvent, userId: user.id_user }),
             });
 
             if (response.ok) {
                 alert('Événement mis à jour avec succès.');
-                setEditingEvent(null);
-                const updatedEvent = await response.json();
-                setEvents(events.map(event => (event.id_event === updatedEvent.id_event ? updatedEvent : event)));
+                const updatedData = await response.json();
+                setEvents(events.map(event => (event.id_event === updatedData.id_event ? updatedData : event)));
             } else {
                 const errorData = await response.json();
                 alert(errorData.message || 'Erreur lors de la mise à jour de l\'événement.');
@@ -127,80 +114,29 @@ const Events = () => {
             <h1>Liste des événements</h1>
             <SearchBar onSearch={(term) => {
                 const lowercasedTerm = term.toLowerCase();
-                const filtered = events.filter((event) =>
+                const filtered = events.filter(event => 
                     event.event_name.toLowerCase().includes(lowercasedTerm) ||
                     event.description.toLowerCase().includes(lowercasedTerm) ||
                     event.location.toLowerCase().includes(lowercasedTerm)
                 );
                 setFilteredEvents(filtered);
             }} />
-            <ul>
-                {filteredEvents.length > 0 ? (
-                    filteredEvents.map((event) => (
-                        <li key={event.id_event}>
-                            {editingEvent && editingEvent.id_event === event.id_event ? (
-                                <form onSubmit={handleUpdate}>
-                                    <input
-                                        type="text"
-                                        value={editingEvent.event_name}
-                                        onChange={(e) => setEditingEvent({ ...editingEvent, event_name: e.target.value })}
-                                        required
-                                    />
-                                    <textarea
-                                        value={editingEvent.description}
-                                        onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
-                                    />
-                                    <input
-                                        type="text"
-                                        value={editingEvent.location}
-                                        onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
-                                        required
-                                    />
-                                    <input
-                                        type="date"
-                                        value={editingEvent.date_event}
-                                        onChange={(e) => setEditingEvent({ ...editingEvent, date_event: e.target.value })}
-                                        required
-                                    />
-                                    <input
-                                        type="number"
-                                        value={editingEvent.max_participants}
-                                        onChange={(e) => setEditingEvent({ ...editingEvent, max_participants: e.target.value })}
-                                        required
-                                    />
-                                    <button type="submit" className='button'>Enregistrer</button>
-                                    <button type="button" className='button' onClick={() => setEditingEvent(null)}>Annuler</button>
-                                </form>
-                            ) : (
-                                <>
-                                    <h3>{event.event_name}</h3>
-                                    <p>{event.description}</p>
-                                    <p>Lieu : {event.location}</p>
-                                    <p>Date : {new Date(event.date_event).toLocaleDateString()}</p>
-                                    <p>Participants max : {event.max_participants}</p>
-
-                                    {/* Affichage "Inscrit" ou bouton d'inscription */}
-                                    {userRegistrations.includes(event.id_event) ? (
-                                        <p>Inscrit</p>
-                                    ) : (
-                                        user?.id_user !== event.created_by && (
-                                            <button className='button' onClick={() => handleRegister(event.id_event)}>S'inscrire</button>
-                                        )
-                                    )}
-
-                                    {/* Bouton de modification */}
-                                    {user?.id_user === event.created_by && (
-                                        <button className='button' onClick={() => handleEdit(event)}>Modifier</button>
-                                    )}
-                                </>
-                            )}
-                        </li>
-                    ))
-                ) : (
-                    <p>Aucun événement trouvé.</p>
-                )}
+            <ul className="history-list">
+                {filteredEvents.map((event) => (
+                    <EventCard 
+                        key={event.id_event}
+                        event={event}
+                        user={user}
+                        userRegistrations={userRegistrations}
+                        handleRegister={handleRegister}
+                        handleEdit={() => {}}
+                        handleDelete={handleDelete}
+                        handleUpdate={handleUpdate}
+                    />
+                ))}
             </ul>
         </div>
     );
 };
+
 export default Events;

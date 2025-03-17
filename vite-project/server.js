@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 const db = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '20122004',
+    password: 'root',
     database: 'eventude'
 });
 console.log('Connecté à la base de données.');
@@ -63,6 +63,48 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.get('/history/:id_user', async (req, res) => {
+    const { id_user } = req.params;
+
+    if (!id_user) {
+        return res.status(400).json({ message: "ID utilisateur manquant." });
+    }
+
+    try {
+        // Vérifier si l'utilisateur existe avant de récupérer son historique
+        const [userExists] = await db.query(`SELECT id_user FROM users WHERE id_user = ?`, [id_user]);
+
+        if (userExists.length === 0) {
+            return res.status(404).json({ message: "Utilisateur non trouvé." });
+        }
+
+        // Récupérer les événements créés par l'utilisateur
+        const [createdEvents] = await db.query(`
+            SELECT events.*, 
+                (SELECT COUNT(*) FROM registrations WHERE registrations.id_event = events.id_event) AS current_participants
+            FROM events 
+            WHERE created_by = ?
+        `, [id_user]);
+
+        // Récupérer les événements auxquels l'utilisateur est inscrit
+        const [registeredEvents] = await db.query(`
+            SELECT events.*, 
+                (SELECT COUNT(*) FROM registrations WHERE registrations.id_event = events.id_event) AS current_participants
+            FROM registrations
+            JOIN events ON registrations.id_event = events.id_event
+            WHERE registrations.id_user = ?
+        `, [id_user]);
+
+        res.status(200).json({ createdEvents, registeredEvents });
+    } catch (err) {
+        console.error('Erreur SQL :', err);
+        res.status(500).json({ message: "Erreur lors de la récupération de l'historique des événements." });
+    }
+});
+
+
+
+
 app.post('/events', async (req, res) => {
     console.log('Données reçues dans la requête POST :', req.body); 
 
@@ -96,13 +138,13 @@ app.get('/events', async (req, res) => {
             FROM events
             LEFT JOIN users ON events.created_by = users.id_user
         `);
-        console.log('Résultats SQL :', rows);
         res.status(200).json(rows);
     } catch (err) {
         console.error('Erreur SQL :', err);
         res.status(500).json({ message: 'Erreur lors de la récupération des événements.' });
     }
 });
+
 
 
 app.get('/registrations/user/:id_user', async (req, res) => {
@@ -190,6 +232,121 @@ app.put('/events/:id', async (req, res) => {
     }
 });
 
+// Route pour récupérer les participants et les annonces d'un événement
+app.get('/event/:id/participants', async (req, res) => {
+    const { id } = req.params;
+    const eventId = parseInt(id, 10); // 🔹 S'assurer que c'est un nombre
+
+    console.log(`🔍 Requête pour récupérer les détails de l'événement ID: ${eventId}`);
+
+    if (isNaN(eventId)) {
+        console.error("❌ ID de l'événement invalide.");
+        return res.status(400).json({ message: "ID d'événement invalide." });
+    }
+
+    try {
+        // 🔹 Vérifier si l'événement existe
+        const [event] = await db.query("SELECT * FROM events WHERE id_event = ?", [eventId]);
+
+        if (event.length === 0) {
+            console.warn(`⚠️ Aucun événement trouvé pour ID: ${eventId}`);
+            return res.status(404).json({ message: "Événement non trouvé." });
+        }
+
+        console.log(`✅ Événement trouvé: ${event[0].event_name}`);
+
+        // 🔹 Récupérer les participants de l'événement
+        const [participants] = await db.query(`
+            SELECT users.id_user, users.username 
+            FROM registrations
+            JOIN users ON registrations.id_user = users.id_user
+            WHERE registrations.id_event = ?
+        `, [eventId]);
+
+        console.log(`👥 Participants récupérés (${participants.length})`);
+
+        // 🔹 Vérifier si la table `announcements` existe avant de l'utiliser
+        let announcements = [];
+        try {
+            const [tableCheck] = await db.query(`
+                SELECT COUNT(*) AS table_exists 
+                FROM information_schema.tables 
+                WHERE table_name = 'announcements' AND table_schema = DATABASE();
+            `);
+
+            if (tableCheck[0].table_exists > 0) {
+                [announcements] = await db.query(`
+                    SELECT announcements.message, users.username 
+                    FROM announcements
+                    JOIN users ON announcements.user_id = users.id_user
+                    WHERE announcements.event_id = ?
+                `, [eventId]);
+
+                console.log(`📢 Annonces récupérées (${announcements.length})`);
+            } else {
+                console.warn("⚠️ La table `announcements` n'existe pas.");
+            }
+        } catch (error) {
+            console.warn("⚠️ Erreur lors de la vérification de la table `announcements` :", error);
+        }
+
+        res.json({ event: event[0], participants, announcements });
+    } catch (err) {
+        console.error("❌ Erreur SQL :", err);
+        res.status(500).json({ message: "Erreur lors de la récupération des participants." });
+    }
+});
+
+// ✅ Route pour poster une annonce (seuls les organisateurs peuvent poster)
+app.post('/event/:id/announce', async (req, res) => {
+    const { id } = req.params;
+    const { userId, message } = req.body;
+
+    console.log(`🔍 Requête POST annonce pour l'événement ID: ${id}, par l'utilisateur ID: ${userId}`);
+
+    // Vérifier si l'ID de l'événement est valide
+    if (!userId || !message.trim()) {
+        return res.status(400).json({ message: "Message vide ou utilisateur invalide." });
+    }
+
+    try {
+        // Vérifier si l'événement existe
+        const [event] = await db.query("SELECT created_by FROM events WHERE id_event = ?", [id]);
+        if (event.length === 0) {
+            console.warn(`⚠️ Événement ID ${id} introuvable.`);
+            return res.status(404).json({ message: "Événement non trouvé." });
+        }
+
+        // Vérifier si l'utilisateur est bien l'organisateur
+        if (event[0].created_by !== userId) {
+            console.warn(`🚫 Accès refusé : l'utilisateur ID ${userId} n'est pas l'organisateur.`);
+            return res.status(403).json({ message: "Seul l'organisateur peut poster une annonce." });
+        }
+
+        // Vérifier si la table "announcements" existe
+        await db.execute(`
+            CREATE TABLE IF NOT EXISTS announcements (
+                id_announcement INT AUTO_INCREMENT PRIMARY KEY,
+                event_id INT NOT NULL,
+                user_id INT NOT NULL,
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (event_id) REFERENCES events(id_event) ON DELETE CASCADE,
+                FOREIGN KEY (user_id) REFERENCES users(id_user) ON DELETE CASCADE
+            )
+        `);
+
+        // Insérer l'annonce
+        await db.execute("INSERT INTO announcements (event_id, user_id, message) VALUES (?, ?, ?)", [id, userId, message]);
+
+        console.log(`✅ Annonce ajoutée pour l'événement ID ${id} par l'utilisateur ID ${userId}`);
+        res.status(201).json({ message, username: "Vous" });
+
+    } catch (err) {
+        console.error("❌ Erreur SQL :", err);
+        res.status(500).json({ message: "Erreur lors de la publication de l'annonce." });
+    }
+});
 
 
     

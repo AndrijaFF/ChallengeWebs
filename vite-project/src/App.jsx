@@ -7,6 +7,8 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Events from './pages/Events';
 import EditEvent from './components/EditEvent';
+import History from './pages/History'; 
+import EventDetails from './pages/EventDetails';
 
 const App = () => {
     return (
@@ -19,6 +21,9 @@ const App = () => {
                 <Route path="/events" element={<Events />} />
                 <Route path="/create-event" element={<CreateEvent />} />
                 <Route path="/edit-event/:id" element={<EditEvent />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/event/:id" element={<EventDetails />} /> {}
+                <Route path="*" element={<h1>404 - Page non trouvée</h1>} />
             </Routes>
         </Router>
     );
