@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import Footer from './components/Footer';  
 import Home from './pages/Home'; 
 import CreateEvent from './pages/CreateEvent';
 import Register from './pages/Register';
@@ -25,6 +26,7 @@ const App = () => {
                 <Route path="/event/:id" element={<EventDetails />} /> {}
                 <Route path="*" element={<h1>404 - Page non trouvée</h1>} />
             </Routes>
+            <Footer /> { }
         </Router>
     );
 };

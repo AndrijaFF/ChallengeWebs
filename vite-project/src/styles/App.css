@@ -185,6 +185,7 @@ body.darkmode .darkmode-button:hover {
   background-color: #333;
   color: #ffffff; 
 }
+
 form {
   display: flex;
   flex-direction: column;
@@ -197,6 +198,8 @@ form {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+
  #createForm {
   display: flex;
   flex-direction: column;
@@ -212,7 +215,6 @@ form {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Titre du formulaire */
 form h1 {
   font-size: 1.8rem;
   color: #333;
@@ -336,26 +338,284 @@ p:last-child {
   outline: none;
 }
 
-.event-details-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* event card */
+.event-card {
+    background: linear-gradient(135deg, #ffffff, #f8f8f8);
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .event-title {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #ffad32;
+    margin-bottom: 10px;
+    text-transform: capitalize;
 }
 
-.event-description, .event-location, .event-date, .event-participants {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 10px;
+.event-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 12px;
+    line-height: 1.5;
 }
+
+.event-location,
+.event-date,
+.event-participants {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.event-status {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #28a745;
+    margin-top: 10px;
+}
+/* event details */
+
+.event-details-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.event-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.event-description, 
+.event-location, 
+.event-date, 
+.event-participants {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+/* ✅ Participants Section */
+.participants-section {
+    margin-top: 30px;
+}
+
+.participants-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.participants-list {
+    list-style: none;
+    padding: 0;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.participants-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.participants-list li:last-child {
+    border-bottom: none;
+}
+
+/* 📢 Annonces Section */
+.announcements-section {
+    margin-top: 30px;
+}
+
+.announcements-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.announcements-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.announcements-list {
+  display: flex;
+  flex-direction: column; /* Les annonces s'affichent du haut vers le bas */
+  gap: 10px;
+  background: #fef3e6;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-y: auto; /* Scroll vertical activé */
+  overflow-x: hidden; /* Désactive le scroll horizontal */
+}
+
+.announcements-list li {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: fit-content;
+  max-width: 80%; /* Évite que les messages ne soient trop larges */
+  word-wrap: break-word;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.announcements-list li strong {
+  font-weight: bold;
+}
+
+/* Alignement pour les messages de l'utilisateur */
+.announcements-list .user-announcement {
+  align-self: flex-end;
+  background: #ffad32; /* Couleur spéciale pour l'organisateur */
+  color: white;
+}
+
+
+
+/* 📝 Formulaire d'annonce */
+.announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.announcement-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: none;
+}
+
+/* 🎉 Bouton publier */
+.post-announcement-button {
+    background-color: #ffad32;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.post-announcement-button:hover {
+    background-color: #e6952c;
+    transform: scale(1.05);
+}
+
+/* 🚀 Animation d’apparition */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ✅ Boutons */
+.button {
+    display: inline-block;
+    background-color: #ffc267;
+    color: white;
+    padding: 10px 15px;
+    margin-top: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    background-color: #ffad32;
+    transform: scale(1.05);
+}
+
+.delete-button {
+    background-color: #e74c3c;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+.details-button {
+    background: linear-gradient(135deg, #ffad32, #ffc267);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 10px;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+}
+
+.details-button:hover {
+    background: linear-gradient(135deg, #ff9700, #ffad32);
+    transform: scale(1.05);
+}
+
+/* 🎨 Formulaire d'édition */
+.edit-event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-event-form input,
+.edit-event-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.edit-event-form input:focus,
+.edit-event-form textarea:focus {
+    border-color: #ffad32;
+    outline: none;
+}
+
+
 
 .participants-section, .announcements-section {
   margin-top: 20px;
@@ -386,7 +646,7 @@ p:last-child {
 }
 
 .button {
-  background-color: #ffc267;
+  background-color: #f9c87d;
   color: white;
   padding: 10px;
   border: none;
@@ -397,3 +657,21 @@ p:last-child {
 .button:hover {
   background-color: #ffad32;
 }
+
+.footer {
+  background-color: #ffad32; 
+  color: rgb(255, 255, 255) !important;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #b8b8b8;
+}
+
+.footer p {
+  margin: 0;
+  color: white !important;
+}
+

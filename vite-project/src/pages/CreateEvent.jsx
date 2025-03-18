@@ -5,6 +5,11 @@ const CreateEvent = () => {
     const { user } = useAuth();
     console.log('Utilisateur connecté :', user);
 
+    const today = new Date().toISOString().split('T')[0];
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    const maxDateFormatted = maxDate.toISOString().split('T')[0];
+
     const [formData, setFormData] = useState({
         event_name: '',
         description: '',
@@ -80,6 +85,8 @@ const CreateEvent = () => {
             <input
                 type="date"
                 value={formData.date_event}
+                min={today}
+                max={maxDateFormatted}
                 onChange={(e) => setFormData({ ...formData, date_event: e.target.value })}
                 required
             />

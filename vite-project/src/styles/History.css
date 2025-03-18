@@ -1,52 +1,61 @@
 #history-container {
-    max-width: 900px;
+    max-width: 90%;
     margin: 20px auto;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.history-title {
-    text-align: center;
-    color: #333;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
+/* Conteneur principal en 3 colonnes */
+.history-columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
 }
 
+/* Style des colonnes */
 .history-section {
-    margin-bottom: 30px;
+    flex: 1;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 30%;
 }
 
+/* Titre des sections */
 .history-section h2 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: #ffc267;
     margin-bottom: 15px;
     border-bottom: 2px solid #ffc267;
     padding-bottom: 5px;
+    text-align: center;
 }
 
+/* Liste des événements sous forme de grille */
 .history-list {
-    list-style: none;
-    padding: 0;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding: 0;
+    margin: 0;
 }
 
+/* Cartes d'événement */
 .event-card {
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 300px;
+    width: 90%;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -129,4 +138,14 @@ body.darkmode .event-participants {
 
 body.darkmode .no-events {
     color: #bbb;
+}
+@media (max-width: 1024px) {
+    .history-columns {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .history-section {
+        width: 90%;
+    }
 }

@@ -11,7 +11,6 @@ const EventDetails = () => {
     const [announcement, setAnnouncement] = useState("");
     const [postingAnnouncement, setPostingAnnouncement] = useState(false);
 
-    // ✅ Fonction pour récupérer les détails de l'événement
     const fetchEventDetails = async () => {
         try {
             console.log(`🔍 Récupération des détails de l'événement ID: ${id}`);
@@ -59,6 +58,8 @@ const EventDetails = () => {
                 ...prevState,
                 announcements: [...prevState.announcements, newAnnouncement]
             }));
+            
+            
             setAnnouncement("");
         } catch (error) {
             console.error("❌ Erreur lors de l'envoi de l'annonce :", error);

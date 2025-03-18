@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const EventCard = ({ event, user, userRegistrations, handleRegister, handleEdit, handleDelete, handleUpdate }) => {
+const EventCard = ({ event, user, userRegistrations = [], handleRegister, handleEdit, handleDelete, handleUpdate }) => {
     const [editing, setEditing] = useState(false);
     const [editedEvent, setEditedEvent] = useState(event);
     const navigate = useNavigate();

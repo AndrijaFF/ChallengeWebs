@@ -61,19 +61,43 @@ const History = () => {
     return (
         <div id="history-container">
             <h1 className="history-title">Vos événements</h1>
-
-            { }
-            {user?.user_type === 'organisateur' && (
-                <div className="history-section" id="created-events">
-                    <h2>Événements créés</h2>
-                    {createdEvents.length > 0 ? (
+    
+            <div className="history-columns">
+                {/* Colonne des événements créés */}
+                {user?.user_type === 'organisateur' && (
+                    <div className="history-section" id="created-events">
+                        <h2>Événements créés</h2>
+                        {createdEvents.length > 0 ? (
+                            <ul className="history-list">
+                                {createdEvents.map(event => (
+                                    <EventCard 
+                                        key={event.id_event}
+                                        event={event}
+                                        user={user}
+                                        handleRegister={() => {}}
+                                        handleEdit={() => {}}
+                                        handleDelete={() => {}}
+                                        handleUpdate={() => {}}
+                                    />
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="no-events">Aucun événement créé.</p>
+                        )}
+                    </div>
+                )}
+    
+                {/* Colonne des événements à venir */}
+                <div className="history-section" id="future-events">
+                    <h2>Événements à venir</h2>
+                    {futureEvents.length > 0 ? (
                         <ul className="history-list">
-                            {createdEvents.map(event => (
+                            {futureEvents.map(event => (
                                 <EventCard 
                                     key={event.id_event}
                                     event={event}
                                     user={user}
- 
+                                    userRegistrations={userRegistrations} 
                                     handleRegister={() => {}}
                                     handleEdit={() => {}}
                                     handleDelete={() => {}}
@@ -82,58 +106,34 @@ const History = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p className="no-events">Aucun événement créé.</p>
+                        <p className="no-events">Aucun événement à venir.</p>
                     )}
                 </div>
-            )}
-
-            {}
-            <div className="history-section" id="future-events">
-                <h2>Événements à venir</h2>
-                {futureEvents.length > 0 ? (
-                    <ul className="history-list">
-                        {futureEvents.map(event => (
-                            <EventCard 
-                                key={event.id_event}
-                                event={event}
-                                user={user}
-                                userRegistrations={userRegistrations} 
-                                handleRegister={() => {}}
-                                handleEdit={() => {}}
-                                handleDelete={() => {}}
-                                handleUpdate={() => {}}
-                            />
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="no-events">Aucun événement à venir.</p>
-                )}
-            </div>
-
-            {/* Événements passés */}
-            <div className="history-section" id="past-events">
-                <h2>Événements auxquels vous avez participé</h2>
-                {pastEvents.length > 0 ? (
-                    <ul className="history-list">
-                        {pastEvents.map(event => (
-                            <EventCard 
-                                key={event.id_event}
-                                event={event}
-                                user={user}
-                                userRegistrations={userRegistrations} // ✅ On passe aussi ici
-                                handleRegister={() => {}}
-                                handleEdit={() => {}}
-                                handleDelete={() => {}}
-                                handleUpdate={() => {}}
-                            />
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="no-events">Aucun événement passé.</p>
-                )}
+    
+                {/* Colonne des événements passés */}
+                <div className="history-section" id="past-events">
+                    <h2>Événements auxquels vous avez participé</h2>
+                    {pastEvents.length > 0 ? (
+                        <ul className="history-list">
+                            {pastEvents.map(event => (
+                                <EventCard 
+                                    key={event.id_event}
+                                    event={event}
+                                    user={user}
+                                    userRegistrations={userRegistrations} 
+                                    handleRegister={() => {}}
+                                    handleEdit={() => {}}
+                                    handleDelete={() => {}}
+                                    handleUpdate={() => {}}
+                                />
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="no-events">Aucun événement passé.</p>
+                    )}
+                </div>
             </div>
         </div>
     );
-};
-
+}    
 export default History;

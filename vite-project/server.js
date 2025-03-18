@@ -297,12 +297,10 @@ app.get('/event/:id/participants', async (req, res) => {
     }
 });
 
-// ✅ Route pour poster une annonce (seuls les organisateurs peuvent poster)
 app.post('/event/:id/announce', async (req, res) => {
     const { id } = req.params;
     const { userId, message } = req.body;
 
-    console.log(`🔍 Requête POST annonce pour l'événement ID: ${id}, par l'utilisateur ID: ${userId}`);
 
     // Vérifier si l'ID de l'événement est valide
     if (!userId || !message.trim()) {
@@ -310,20 +308,17 @@ app.post('/event/:id/announce', async (req, res) => {
     }
 
     try {
-        // Vérifier si l'événement existe
         const [event] = await db.query("SELECT created_by FROM events WHERE id_event = ?", [id]);
         if (event.length === 0) {
-            console.warn(`⚠️ Événement ID ${id} introuvable.`);
+            console.warn(` Événement ID ${id} introuvable.`);
             return res.status(404).json({ message: "Événement non trouvé." });
         }
 
-        // Vérifier si l'utilisateur est bien l'organisateur
         if (event[0].created_by !== userId) {
-            console.warn(`🚫 Accès refusé : l'utilisateur ID ${userId} n'est pas l'organisateur.`);
+            console.warn(` Accès refusé : l'utilisateur ID ${userId} n'est pas l'organisateur.`);
             return res.status(403).json({ message: "Seul l'organisateur peut poster une annonce." });
         }
 
-        // Vérifier si la table "announcements" existe
         await db.execute(`
             CREATE TABLE IF NOT EXISTS announcements (
                 id_announcement INT AUTO_INCREMENT PRIMARY KEY,
@@ -336,10 +331,8 @@ app.post('/event/:id/announce', async (req, res) => {
             )
         `);
 
-        // Insérer l'annonce
         await db.execute("INSERT INTO announcements (event_id, user_id, message) VALUES (?, ?, ?)", [id, userId, message]);
 
-        console.log(`✅ Annonce ajoutée pour l'événement ID ${id} par l'utilisateur ID ${userId}`);
         res.status(201).json({ message, username: "Vous" });
 
     } catch (err) {

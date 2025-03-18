@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import SearchBar from '../components/SearchBar'; 
-import EventCard from '../components/EventCard'; // Import du composant
+import EventCard from '../components/EventCard'; 
 import { useNavigate } from 'react-router-dom';
+import "../styles/Events.css";
 
 const Events = () => {
     const [events, setEvents] = useState([]);
@@ -10,6 +11,10 @@ const Events = () => {
     const [filteredEvents, setFilteredEvents] = useState([]); 
     const { user } = useAuth();
     const navigate = useNavigate();
+
+        // Pagination
+        const [currentPage, setCurrentPage] = useState(1);
+        const eventsPerPage = 6;
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -109,34 +114,58 @@ const Events = () => {
         }
     };
 
+    // Pagination - Calcul des événements à afficher
+    const indexOfLastEvent = currentPage * eventsPerPage;
+    const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+    const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
+    // Changer de page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
-        <div>
-            <h1>Liste des événements</h1>
-            <SearchBar onSearch={(term) => {
-                const lowercasedTerm = term.toLowerCase();
-                const filtered = events.filter(event => 
-                    event.event_name.toLowerCase().includes(lowercasedTerm) ||
-                    event.description.toLowerCase().includes(lowercasedTerm) ||
-                    event.location.toLowerCase().includes(lowercasedTerm)
-                );
-                setFilteredEvents(filtered);
-            }} />
-            <ul className="history-list">
-                {filteredEvents.map((event) => (
-                    <EventCard 
-                        key={event.id_event}
-                        event={event}
-                        user={user}
-                        userRegistrations={userRegistrations}
-                        handleRegister={handleRegister}
-                        handleEdit={() => {}}
-                        handleDelete={handleDelete}
-                        handleUpdate={handleUpdate}
-                    />
-                ))}
+        <div className="events-container">
+            <h1 className="events-title">Liste des événements</h1>
+
+            {/* Barre de recherche */}
+            <SearchBar
+                onSearch={(term) => {
+                    const lowercasedTerm = term.toLowerCase();
+                    const filtered = events.filter(event =>
+                        event.event_name.toLowerCase().includes(lowercasedTerm) ||
+                        event.description.toLowerCase().includes(lowercasedTerm) ||
+                        event.location.toLowerCase().includes(lowercasedTerm)
+                    );
+                    setFilteredEvents(filtered);
+                    setCurrentPage(1); // Réinitialisation à la page 1
+                }}
+            />
+
+            {/* Affichage des événements */}
+            <ul className="events-list">
+                {currentEvents.length > 0 ? (
+                    currentEvents.map((event) => (
+                        <EventCard key={event.id_event} event={event} user={user} />
+                    ))
+                ) : (
+                    <p className="no-events">Aucun événement trouvé.</p>
+                )}
             </ul>
+
+            {/* Pagination */}
+            <div className="pagination">
+                {Array.from({ length: Math.ceil(filteredEvents.length / eventsPerPage) }, (_, i) => (
+                    <button
+                        key={i}
+                        className={`page-button ${currentPage === i + 1 ? "active" : ""}`}
+                        onClick={() => paginate(i + 1)}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };
+
 
 export default Events;
