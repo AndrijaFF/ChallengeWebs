@@ -240,7 +240,7 @@ app.get('/event/:id/participants', async (req, res) => {
     console.log(`🔍 Requête pour récupérer les détails de l'événement ID: ${eventId}`);
 
     if (isNaN(eventId)) {
-        console.error("❌ ID de l'événement invalide.");
+        console.error("ID de l'événement invalide.");
         return res.status(400).json({ message: "ID d'événement invalide." });
     }
 
@@ -249,11 +249,11 @@ app.get('/event/:id/participants', async (req, res) => {
         const [event] = await db.query("SELECT * FROM events WHERE id_event = ?", [eventId]);
 
         if (event.length === 0) {
-            console.warn(`⚠️ Aucun événement trouvé pour ID: ${eventId}`);
+            console.warn(` Aucun événement trouvé pour ID: ${eventId}`);
             return res.status(404).json({ message: "Événement non trouvé." });
         }
 
-        console.log(`✅ Événement trouvé: ${event[0].event_name}`);
+        console.log(`Événement trouvé: ${event[0].event_name}`);
 
         // 🔹 Récupérer les participants de l'événement
         const [participants] = await db.query(`
@@ -282,17 +282,17 @@ app.get('/event/:id/participants', async (req, res) => {
                     WHERE announcements.event_id = ?
                 `, [eventId]);
 
-                console.log(`📢 Annonces récupérées (${announcements.length})`);
+                console.log(`Annonces récupérées (${announcements.length})`);
             } else {
-                console.warn("⚠️ La table `announcements` n'existe pas.");
+                console.warn("La table `announcements` n'existe pas.");
             }
         } catch (error) {
-            console.warn("⚠️ Erreur lors de la vérification de la table `announcements` :", error);
+            console.warn("Erreur lors de la vérification de la table `announcements` :", error);
         }
 
         res.json({ event: event[0], participants, announcements });
     } catch (err) {
-        console.error("❌ Erreur SQL :", err);
+        console.error("Erreur SQL :", err);
         res.status(500).json({ message: "Erreur lors de la récupération des participants." });
     }
 });
@@ -336,7 +336,7 @@ app.post('/event/:id/announce', async (req, res) => {
         res.status(201).json({ message, username: "Vous" });
 
     } catch (err) {
-        console.error("❌ Erreur SQL :", err);
+        console.error("Erreur SQL :", err);
         res.status(500).json({ message: "Erreur lors de la publication de l'annonce." });
     }
 });
