@@ -222,7 +222,6 @@ form h1 {
   text-align: center;
 }
 
-/* Champs d'entrée */
 form input,
 form textarea {
   width: 100%;
@@ -338,7 +337,6 @@ p:last-child {
   outline: none;
 }
 
-/* event card */
 .event-card {
     background: linear-gradient(135deg, #ffffff, #f8f8f8);
     padding: 20px;
@@ -386,6 +384,9 @@ p:last-child {
     color: #28a745;
     margin-top: 10px;
 }
+
+
+
 /* event details */
 
 .event-details-container {
@@ -416,7 +417,6 @@ p:last-child {
     margin-bottom: 12px;
 }
 
-/* ✅ Participants Section */
 .participants-section {
     margin-top: 30px;
 }
@@ -446,7 +446,6 @@ p:last-child {
     border-bottom: none;
 }
 
-/* 📢 Annonces Section */
 .announcements-section {
     margin-top: 30px;
 }
@@ -467,13 +466,13 @@ p:last-child {
 
 .announcements-list {
   display: flex;
-  flex-direction: column; /* Les annonces s'affichent du haut vers le bas */
+  flex-direction: column; 
   gap: 10px;
   background: #fef3e6;
   padding: 15px;
   border-radius: 8px;
-  overflow-y: auto; /* Scroll vertical activé */
-  overflow-x: hidden; /* Désactive le scroll horizontal */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .announcements-list li {
@@ -482,7 +481,7 @@ p:last-child {
   border-radius: 8px;
   font-size: 1rem;
   width: fit-content;
-  max-width: 80%; /* Évite que les messages ne soient trop larges */
+  max-width: 80%; 
   word-wrap: break-word;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -491,16 +490,14 @@ p:last-child {
   font-weight: bold;
 }
 
-/* Alignement pour les messages de l'utilisateur */
 .announcements-list .user-announcement {
   align-self: flex-end;
-  background: #ffad32; /* Couleur spéciale pour l'organisateur */
+  background: #ffad32; 
   color: white;
 }
 
 
 
-/* 📝 Formulaire d'annonce */
 .announcement-form {
     display: flex;
     flex-direction: column;
@@ -517,7 +514,6 @@ p:last-child {
     resize: none;
 }
 
-/* 🎉 Bouton publier */
 .post-announcement-button {
     background-color: #ffad32;
     color: white;
@@ -535,7 +531,6 @@ p:last-child {
     transform: scale(1.05);
 }
 
-/* 🚀 Animation d’apparition */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -547,7 +542,6 @@ p:last-child {
     }
 }
 
-/* ✅ Boutons */
 .button {
     display: inline-block;
     background-color: #ffc267;
@@ -592,7 +586,6 @@ p:last-child {
     transform: scale(1.05);
 }
 
-/* 🎨 Formulaire d'édition */
 .edit-event-form {
     display: flex;
     flex-direction: column;

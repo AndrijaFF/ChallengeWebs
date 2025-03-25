@@ -21,10 +21,10 @@ const EventDetails = () => {
             }
 
             const data = await response.json();
-            console.log("✅ Détails récupérés :", data);
+            console.log(" Détails récupérés :", data);
             setEventDetails(data);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des détails :", error);
+            console.error(" Erreur lors de la récupération des détails :", error);
             setError(error.message);
         } finally {
             setLoading(false);
@@ -62,7 +62,7 @@ const EventDetails = () => {
             
             setAnnouncement("");
         } catch (error) {
-            console.error("❌ Erreur lors de l'envoi de l'annonce :", error);
+            console.error(" Erreur lors de l'envoi de l'annonce :", error);
             alert("Impossible de poster l'annonce.");
         } finally {
             setPostingAnnouncement(false);
@@ -81,7 +81,7 @@ const EventDetails = () => {
             <p className="event-date">📅 {new Date(eventDetails.event.date_event).toLocaleDateString()}</p>
             <p className="event-participants">👥 {eventDetails.participants.length} / {eventDetails.event.max_participants} participants</p>
 
-            {/* Liste des participants */}
+            { }
             <div className="participants-section">
                 <h2>Participants</h2>
                 <ul className="participants-list">
@@ -95,7 +95,7 @@ const EventDetails = () => {
                 </ul>
             </div>
 
-            {/* Section Annonces */}
+           
             <div className="announcements-section">
                 <h2>Annonces</h2>
                 <ul className="announcements-list">
@@ -110,7 +110,7 @@ const EventDetails = () => {
                     )}
                 </ul>
 
-                {/* Bouton + Formulaire de publication d'annonce (Réservé à l'organisateur) */}
+                { }
                 {user?.id_user === eventDetails.event.created_by && (
                     <div className="announcement-form">
                         <button 

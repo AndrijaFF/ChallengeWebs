@@ -235,7 +235,7 @@ app.put('/events/:id', async (req, res) => {
 // Route pour récupérer les participants et les annonces d'un événement
 app.get('/event/:id/participants', async (req, res) => {
     const { id } = req.params;
-    const eventId = parseInt(id, 10); // 🔹 S'assurer que c'est un nombre
+    const eventId = parseInt(id, 10); 
 
     console.log(`🔍 Requête pour récupérer les détails de l'événement ID: ${eventId}`);
 
@@ -245,7 +245,6 @@ app.get('/event/:id/participants', async (req, res) => {
     }
 
     try {
-        // 🔹 Vérifier si l'événement existe
         const [event] = await db.query("SELECT * FROM events WHERE id_event = ?", [eventId]);
 
         if (event.length === 0) {
@@ -255,7 +254,6 @@ app.get('/event/:id/participants', async (req, res) => {
 
         console.log(`Événement trouvé: ${event[0].event_name}`);
 
-        // 🔹 Récupérer les participants de l'événement
         const [participants] = await db.query(`
             SELECT users.id_user, users.username 
             FROM registrations
@@ -265,7 +263,6 @@ app.get('/event/:id/participants', async (req, res) => {
 
         console.log(`👥 Participants récupérés (${participants.length})`);
 
-        // 🔹 Vérifier si la table `announcements` existe avant de l'utiliser
         let announcements = [];
         try {
             const [tableCheck] = await db.query(`
@@ -302,7 +299,6 @@ app.post('/event/:id/announce', async (req, res) => {
     const { userId, message } = req.body;
 
 
-    // Vérifier si l'ID de l'événement est valide
     if (!userId || !message.trim()) {
         return res.status(400).json({ message: "Message vide ou utilisateur invalide." });
     }

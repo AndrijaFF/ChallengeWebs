@@ -54,7 +54,7 @@ const EventCard = ({ event, user, userRegistrations = [], handleRegister, handle
                     <p className="event-date">📅 {new Date(event.date_event).toLocaleDateString()}</p>
                     <p className="event-participants">👥 {event.current_participants} / {event.max_participants} participants</p>
 
-                    {/* Affichage "Inscrit" ou bouton d'inscription */}
+                    {}
                     {userRegistrations.includes(event.id_event) ? (
                         <p className="event-status">✅ Inscrit</p>
                     ) : (
@@ -63,7 +63,7 @@ const EventCard = ({ event, user, userRegistrations = [], handleRegister, handle
                         )
                     )}
 
-                    {/* Boutons de modification et suppression */}
+                    {}
                     {user?.id_user === event.created_by && (
                         <div>
                             <button className="button" onClick={() => setEditing(true)}>Modifier</button>

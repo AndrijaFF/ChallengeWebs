@@ -12,10 +12,6 @@ const Events = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-        // Pagination
-        const [currentPage, setCurrentPage] = useState(1);
-        const eventsPerPage = 6;
-
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -72,18 +68,18 @@ const Events = () => {
 
     const handleDelete = async (id_event) => {
         if (!window.confirm("Voulez-vous vraiment supprimer cet événement ?")) return;
-    
+
         try {
             const response = await fetch(`http://localhost:5000/events/${id_event}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: user.id_user }),
             });
-    
+
             if (response.ok) {
                 alert('Événement supprimé avec succès.');
                 setEvents(events.filter(event => event.id_event !== id_event));
-                window.location.reload();
+                setFilteredEvents(filteredEvents.filter(event => event.id_event !== id_event));
             } else {
                 const errorData = await response.json();
                 alert(errorData.message || 'Erreur lors de la suppression de l\'événement.');
@@ -105,6 +101,7 @@ const Events = () => {
                 alert('Événement mis à jour avec succès.');
                 const updatedData = await response.json();
                 setEvents(events.map(event => (event.id_event === updatedData.id_event ? updatedData : event)));
+                setFilteredEvents(filteredEvents.map(event => (event.id_event === updatedData.id_event ? updatedData : event)));
             } else {
                 const errorData = await response.json();
                 alert(errorData.message || 'Erreur lors de la mise à jour de l\'événement.');
@@ -114,19 +111,10 @@ const Events = () => {
         }
     };
 
-    // Pagination - Calcul des événements à afficher
-    const indexOfLastEvent = currentPage * eventsPerPage;
-    const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
-    const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent);
-
-    // Changer de page
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
     return (
         <div className="events-container">
             <h1 className="events-title">Liste des événements</h1>
 
-            {/* Barre de recherche */}
             <SearchBar
                 onSearch={(term) => {
                     const lowercasedTerm = term.toLowerCase();
@@ -136,36 +124,29 @@ const Events = () => {
                         event.location.toLowerCase().includes(lowercasedTerm)
                     );
                     setFilteredEvents(filtered);
-                    setCurrentPage(1); // Réinitialisation à la page 1
                 }}
             />
 
-            {/* Affichage des événements */}
-            <ul className="events-list">
-                {currentEvents.length > 0 ? (
-                    currentEvents.map((event) => (
-                        <EventCard key={event.id_event} event={event} user={user} />
-                    ))
-                ) : (
+        <ul className="events-list">
+                {filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                    <EventCard
+                        key={event.id_event}
+                        event={event}
+                        user={user}
+                        userRegistrations={userRegistrations}
+                        handleRegister={handleRegister}
+                        handleEdit={() => {}}
+                        handleDelete={handleDelete}
+                        handleUpdate={handleUpdate}
+                    />
+                ))
+            ) : (
                     <p className="no-events">Aucun événement trouvé.</p>
-                )}
+            )}
             </ul>
-
-            {/* Pagination */}
-            <div className="pagination">
-                {Array.from({ length: Math.ceil(filteredEvents.length / eventsPerPage) }, (_, i) => (
-                    <button
-                        key={i}
-                        className={`page-button ${currentPage === i + 1 ? "active" : ""}`}
-                        onClick={() => paginate(i + 1)}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-            </div>
         </div>
     );
 };
-
 
 export default Events;
