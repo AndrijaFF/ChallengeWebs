@@ -5,6 +5,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
+    padding-bottom: 60px; 
+
 }
 
 header {
@@ -22,11 +24,11 @@ header h1 {
     margin: 0;
     color: #333;
 }
-
 header div {
-    display: flex;
-    align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
 }
+
 
 header span {
     margin-right: 15px;
@@ -660,7 +662,6 @@ p:last-child {
   position: fixed;
   bottom: 0;
   width: 100%;
-  border-top: 1px solid #b8b8b8;
 }
 
 .footer p {
@@ -668,3 +669,82 @@ p:last-child {
   color: white !important;
 }
 
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  header span {
+    font-size: 0.9rem;
+    margin-right: 10px;
+  }
+
+  .darkmode-button {
+    margin: 10px 0;
+  }
+
+  .button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+    margin: 5px 0;
+  }
+
+  .form-register,
+  .form-login,
+  #createForm {
+    width: 95%;
+    margin: 30px auto;
+    padding: 15px;
+  }
+
+  .event-card {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .event-title {
+    font-size: 1.3rem;
+  }
+
+  .event-description,
+  .event-location,
+  .event-date,
+  .event-participants {
+    font-size: 0.95rem;
+  }
+
+  .event-details-container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .announcement-form {
+    gap: 8px;
+  }
+
+  .announcement-input {
+    font-size: 0.95rem;
+  }
+
+  .footer {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}

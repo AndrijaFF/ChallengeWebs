@@ -10,7 +10,6 @@
     align-items: center;
 }
 
-/* Conteneur principal en 3 colonnes */
 .history-columns {
     display: flex;
     justify-content: space-between;
@@ -18,7 +17,6 @@
     width: 100%;
 }
 
-/* Style des colonnes */
 .history-section {
     flex: 1;
     padding: 20px;
@@ -28,7 +26,6 @@
     min-width: 30%;
 }
 
-/* Titre des sections */
 .history-section h2 {
     font-size: 1.5rem;
     color: #ffc267;
@@ -37,6 +34,8 @@
     padding-bottom: 5px;
     text-align: center;
 }
+
+
 
 /* Liste des événements sous forme de grille */
 .history-list {
@@ -47,6 +46,9 @@
     padding: 0;
     margin: 0;
 }
+
+
+
 
 /* Cartes d'événement */
 .event-card {

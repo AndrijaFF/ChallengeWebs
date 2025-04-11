@@ -36,7 +36,6 @@
 }
 
 
-/* Pagination */
 .pagination {
     display: flex;
     justify-content: center;
@@ -64,7 +63,6 @@
     font-weight: bold;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
     .event-card {
         flex: 1 1 calc(45% - 20px); 
