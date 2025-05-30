@@ -6,7 +6,10 @@ body {
     padding: 0;
     background-color: #f9f9f9;
     padding-bottom: 60px; 
-
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 header {
@@ -669,23 +672,67 @@ p:last-child {
   color: white !important;
 }
 
+@media screen and (max-width: 1024px) {
+  ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  li {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
 @media screen and (max-width: 768px) {
   body {
     font-size: 14px;
     padding: 0;
     margin: 0;
     overflow-x: hidden;
+    width: 100vw;
+    max-width: 100vw;
+  }
+  html {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  #root, .home-container, .events-container, .event-details-container, .history-columns, .history-section, .search-bar, .form-register, .form-login, #createForm, ul, li {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  img, table {
+    max-width: 100%;
+    height: auto;
+    display: block;
   }
 
   header {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
+    width: 100%;
   }
 
   header h1 {
     font-size: 1.2rem;
     margin-bottom: 10px;
+  }
+
+  header .header-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
   }
 
   header span {
@@ -707,19 +754,21 @@ p:last-child {
   .form-register,
   .form-login,
   #createForm {
-    width: 95%;
-    margin: 30px auto;
-    padding: 15px;
+    width: 98%;
+    margin: 20px auto;
+    padding: 10px;
+    min-width: unset;
   }
 
   .event-card {
-    width: 100%;
-    padding: 15px;
+    width: 98%;
+    padding: 12px;
     border-radius: 10px;
+    margin: 0 auto 10px auto;
   }
 
   .event-title {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
   }
 
   .event-description,
@@ -730,9 +779,9 @@ p:last-child {
   }
 
   .event-details-container {
-    width: 95%;
-    margin: 20px auto;
-    padding: 20px;
+    width: 98%;
+    margin: 10px auto;
+    padding: 10px;
   }
 
   .announcement-form {
@@ -746,5 +795,15 @@ p:last-child {
   .footer {
     font-size: 0.9rem;
     padding: 10px;
+  }
+
+  ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  li {
+    width: 98%;
+    margin: 0 auto 10px auto;
   }
 }

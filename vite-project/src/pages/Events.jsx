@@ -29,7 +29,12 @@ const Events = () => {
 
         const fetchUserRegistrations = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/registrations/user/${user.id_user}`);
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:5000/registrations/user/${user.id_user}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des inscriptions.');
                 }
@@ -48,10 +53,19 @@ const Events = () => {
 
     const handleRegister = async (id_event) => {
         try {
+            const token = localStorage.getItem('token');
+            // Fetch CSRF token
+            const csrfRes = await fetch('http://localhost:5000/csrf-token', { credentials: 'include' });
+            const { csrfToken } = await csrfRes.json();
             const response = await fetch(`http://localhost:5000/registrations`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'X-CSRF-Token': csrfToken
+                },
                 body: JSON.stringify({ id_event, id_user: user.id_user }),
+                credentials: 'include'
             });
 
             if (response.ok) {
@@ -70,10 +84,19 @@ const Events = () => {
         if (!window.confirm("Voulez-vous vraiment supprimer cet événement ?")) return;
 
         try {
+            const token = localStorage.getItem('token');
+            // Fetch CSRF token
+            const csrfRes = await fetch('http://localhost:5000/csrf-token', { credentials: 'include' });
+            const { csrfToken } = await csrfRes.json();
             const response = await fetch(`http://localhost:5000/events/${id_event}`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'X-CSRF-Token': csrfToken
+                },
                 body: JSON.stringify({ userId: user.id_user }),
+                credentials: 'include'
             });
 
             if (response.ok) {
@@ -91,10 +114,19 @@ const Events = () => {
 
     const handleUpdate = async (updatedEvent) => {
         try {
+            const token = localStorage.getItem('token');
+            // Fetch CSRF token
+            const csrfRes = await fetch('http://localhost:5000/csrf-token', { credentials: 'include' });
+            const { csrfToken } = await csrfRes.json();
             const response = await fetch(`http://localhost:5000/events/${updatedEvent.id_event}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'X-CSRF-Token': csrfToken
+                },
                 body: JSON.stringify({ ...updatedEvent, userId: user.id_user }),
+                credentials: 'include'
             });
 
             if (response.ok) {

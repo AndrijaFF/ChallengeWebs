@@ -14,7 +14,12 @@ const EventDetails = () => {
     const fetchEventDetails = async () => {
         try {
             console.log(`🔍 Récupération des détails de l'événement ID: ${id}`);
-            const response = await fetch(`http://localhost:5000/event/${id}/participants`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/event/${id}/participants`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             if (!response.ok) {
                 throw new Error(`Erreur lors de la récupération des détails. Code: ${response.status}`);
@@ -43,10 +48,19 @@ const EventDetails = () => {
 
         setPostingAnnouncement(true);
         try {
+            const token = localStorage.getItem('token');
+            // Fetch CSRF token
+            const csrfRes = await fetch('http://localhost:5000/csrf-token', { credentials: 'include' });
+            const { csrfToken } = await csrfRes.json();
             const response = await fetch(`http://localhost:5000/event/${id}/announce`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'X-CSRF-Token': csrfToken
+                },
                 body: JSON.stringify({ userId: user.id_user, message: announcement }),
+                credentials: 'include'
             });
 
             if (!response.ok) {

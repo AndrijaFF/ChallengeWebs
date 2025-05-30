@@ -2,18 +2,33 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import sanitizeHtml from 'sanitize-html';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const PORT = 5000;
+const JWT_SECRET = process.env.JWT_SECRET;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(helmet());
 
 const db = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'eventude'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 console.log('Connecté à la base de données.');
 
@@ -25,9 +40,11 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'Tous les champs sont requis.' });
     }
 
-    const query = 'INSERT INTO users (username, email, password, user_type) VALUES (?, ?, ?, ?)';
     try {
-        await db.execute(query, [username, email, password, userType]);
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const query = 'INSERT INTO users (username, email, password, user_type) VALUES (?, ?, ?, ?)';
+        await db.execute(query, [username, email, hashedPassword, userType]);
         res.status(201).json({ message: 'Utilisateur inscrit avec succès.' });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
@@ -47,23 +64,53 @@ app.post('/login', async (req, res) => {
         return res.status(400).json({ message: 'Tous les champs sont requis.' });
     }
 
-    const query = 'SELECT id_user, username, email, user_type FROM users WHERE email = ? AND password = ?';
-    
     try {
-        const [rows] = await db.execute(query, [email, password]);
+        // Get user by email
+        const query = 'SELECT id_user, username, email, user_type, password FROM users WHERE email = ?';
+        const [rows] = await db.execute(query, [email]);
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
         }
 
         const user = rows[0];
-        res.status(200).json(user); 
+        // Compare password
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
+        }
+
+        // Remove password before sending user object
+        delete user.password;
+
+        // Generate JWT
+        const token = jwt.sign(
+            { id_user: user.id_user, username: user.username, user_type: user.user_type },
+            JWT_SECRET,
+            { expiresIn: '2h' }
+        );
+
+        res.status(200).json({ user, token }); // Send token to frontend
     } catch (err) {
         console.error('Erreur SQL :', err);
         res.status(500).json({ message: 'Erreur lors de la connexion.' });
     }
 });
 
-app.get('/history/:id_user', async (req, res) => {
+// JWT authentication middleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.status(401).json({ message: 'Token manquant.' });
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Token invalide.' });
+        req.user = user;
+        next();
+    });
+}
+
+app.get('/history/:id_user', authenticateToken, async (req, res) => {
     const { id_user } = req.params;
 
     if (!id_user) {
@@ -102,10 +149,7 @@ app.get('/history/:id_user', async (req, res) => {
     }
 });
 
-
-
-
-app.post('/events', async (req, res) => {
+app.post('/events', csrf({ cookie: true }), async (req, res) => {
     console.log('Données reçues dans la requête POST :', req.body); 
 
     const { event_name, description, location, date_event, max_participants, created_by } = req.body;
@@ -114,19 +158,23 @@ app.post('/events', async (req, res) => {
         return res.status(400).json({ message: 'Tous les champs requis ne sont pas remplis.' });
     }
 
+    // Sanitize user input
+    const cleanEventName = sanitizeHtml(event_name);
+    const cleanDescription = sanitizeHtml(description);
+    const cleanLocation = sanitizeHtml(location);
+
     try {
         const query = `
             INSERT INTO events (event_name, description, location, date_event, max_participants, created_by, created_at)
             VALUES (?, ?, ?, ?, ?, ?, NOW())
         `;
-        await db.execute(query, [event_name, description, location, date_event, max_participants, created_by]);
+        await db.execute(query, [cleanEventName, cleanDescription, cleanLocation, date_event, max_participants, created_by]);
         res.status(201).json({ message: 'Événement créé avec succès.' });
     } catch (err) {
         console.error('Erreur SQL :', err);
         res.status(500).json({ message: 'Erreur lors de la création de l\'événement.' });
     }
 });
-
 
 app.get('/events', async (req, res) => {
     try {
@@ -145,8 +193,6 @@ app.get('/events', async (req, res) => {
     }
 });
 
-
-
 app.get('/registrations/user/:id_user', async (req, res) => {
     const { id_user } = req.params;
 
@@ -159,8 +205,7 @@ app.get('/registrations/user/:id_user', async (req, res) => {
     }
 });
 
-
-app.post('/registrations', async (req, res) => {
+app.post('/registrations', csrf({ cookie: true }), async (req, res) => {
     const { id_event, id_user } = req.body;
 
     if (!id_event || !id_user) {
@@ -187,7 +232,7 @@ app.post('/registrations', async (req, res) => {
     }
 });
 
-app.delete('/events/:id', async (req, res) => {
+app.delete('/events/:id', csrf({ cookie: true }), async (req, res) => {
     const eventId = req.params.id;
     const { userId } = req.body; 
 
@@ -206,9 +251,18 @@ app.delete('/events/:id', async (req, res) => {
     }
 });
 
-app.put('/events/:id', async (req, res) => {
+app.put('/events/:id', csrf({ cookie: true }), async (req, res) => {
     const eventId = req.params.id; 
     const { event_name, description, location, date_event, max_participants, userId } = req.body;
+
+    if (!event_name || !location || !date_event || !userId || max_participants < 1) {
+        return res.status(400).json({ message: 'Tous les champs requis ne sont pas remplis.' });
+    }
+
+    // Sanitize user input
+    const cleanEventName = sanitizeHtml(event_name);
+    const cleanDescription = sanitizeHtml(description);
+    const cleanLocation = sanitizeHtml(location);
 
     try {
         const [rows] = await db.execute('SELECT * FROM events WHERE id_event = ? AND created_by = ?', [eventId, userId]);
@@ -222,7 +276,7 @@ app.put('/events/:id', async (req, res) => {
             SET event_name = ?, description = ?, location = ?, date_event = ?, max_participants = ?
             WHERE id_event = ?
         `;
-        await db.execute(query, [event_name, description, location, date_event, max_participants, eventId]);
+        await db.execute(query, [cleanEventName, cleanDescription, cleanLocation, date_event, max_participants, eventId]);
 
         const [updatedEvent] = await db.query('SELECT * FROM events WHERE id_event = ?', [eventId]);
         res.status(200).json(updatedEvent[0]);
@@ -294,14 +348,16 @@ app.get('/event/:id/participants', async (req, res) => {
     }
 });
 
-app.post('/event/:id/announce', async (req, res) => {
+app.post('/event/:id/announce', csrf({ cookie: true }), async (req, res) => {
     const { id } = req.params;
     const { userId, message } = req.body;
-
 
     if (!userId || !message.trim()) {
         return res.status(400).json({ message: "Message vide ou utilisateur invalide." });
     }
+
+    // Sanitize message
+    const cleanMessage = sanitizeHtml(message);
 
     try {
         const [event] = await db.query("SELECT created_by FROM events WHERE id_event = ?", [id]);
@@ -327,7 +383,7 @@ app.post('/event/:id/announce', async (req, res) => {
             )
         `);
 
-        await db.execute("INSERT INTO announcements (event_id, user_id, message) VALUES (?, ?, ?)", [id, userId, message]);
+        await db.execute("INSERT INTO announcements (event_id, user_id, message) VALUES (?, ?, ?)", [id, userId, cleanMessage]);
 
         res.status(201).json({ message, username: "Vous" });
 
@@ -337,8 +393,10 @@ app.post('/event/:id/announce', async (req, res) => {
     }
 });
 
-
-    
+// Expose CSRF token to frontend
+app.get('/csrf-token', csrf({ cookie: true }), (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+});
 
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);

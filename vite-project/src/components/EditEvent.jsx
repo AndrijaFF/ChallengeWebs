@@ -32,10 +32,19 @@ const EditEvent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault(); 
         try {
+            const token = localStorage.getItem('token');
+            // Fetch CSRF token
+            const csrfRes = await fetch('http://localhost:5000/csrf-token', { credentials: 'include' });
+            const { csrfToken } = await csrfRes.json();
             const response = await fetch(`http://localhost:5000/events/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'X-CSRF-Token': csrfToken
+                },
                 body: JSON.stringify({ ...formData, userId: user.id_user }),
+                credentials: 'include'
             });
     
             if (response.ok) {

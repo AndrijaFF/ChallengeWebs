@@ -21,7 +21,12 @@ const History = () => {
 
         const fetchHistory = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/history/${user.id_user}`);
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:5000/history/${user.id_user}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error(`Erreur lors de la récupération des événements. Code: ${response.status}`);
                 }

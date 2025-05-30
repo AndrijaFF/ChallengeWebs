@@ -26,6 +26,8 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user'); 
+        localStorage.removeItem('token'); // <-- This line removes the JWT token
+
     };
 
     return (

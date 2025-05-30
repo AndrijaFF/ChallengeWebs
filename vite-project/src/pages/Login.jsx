@@ -20,8 +20,9 @@ const Login = () => {
             });
 
             if (response.ok) {
-                const user = await response.json();
-                login(user); 
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                login(data.user);
                 alert('Connexion réussie !');
                 navigate('/'); 
             } else if (response.status === 401) {
