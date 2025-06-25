@@ -7,14 +7,17 @@ import bcrypt from 'bcrypt';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import sanitizeHtml from 'sanitize-html';
 import dotenv from 'dotenv';
+import xss from 'xss';
 
 dotenv.config();
+
 
 const app = express();
 const PORT = 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
+
+
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -41,7 +44,7 @@ app.post('/register', async (req, res) => {
     }
 
     try {
-        // Hash the password
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         const query = 'INSERT INTO users (username, email, password, user_type) VALUES (?, ?, ?, ?)';
         await db.execute(query, [username, email, hashedPassword, userType]);
@@ -51,7 +54,7 @@ app.post('/register', async (req, res) => {
             res.status(409).json({ message: 'Cet utilisateur ou cet email existe déjà.' });
         } else {
             console.error(err);
-            res.status(500).json({ message: 'Erreur interne du serveur.' });
+            res.status(500).json({ message: 'Erreur serveur.' });
         }
     }
 });
@@ -65,7 +68,6 @@ app.post('/login', async (req, res) => {
     }
 
     try {
-        // Get user by email
         const query = 'SELECT id_user, username, email, user_type, password FROM users WHERE email = ?';
         const [rows] = await db.execute(query, [email]);
         if (rows.length === 0) {
@@ -118,14 +120,12 @@ app.get('/history/:id_user', authenticateToken, async (req, res) => {
     }
 
     try {
-        // Vérifier si l'utilisateur existe avant de récupérer son historique
         const [userExists] = await db.query(`SELECT id_user FROM users WHERE id_user = ?`, [id_user]);
 
         if (userExists.length === 0) {
             return res.status(404).json({ message: "Utilisateur non trouvé." });
         }
 
-        // Récupérer les événements créés par l'utilisateur
         const [createdEvents] = await db.query(`
             SELECT events.*, 
                 (SELECT COUNT(*) FROM registrations WHERE registrations.id_event = events.id_event) AS current_participants
@@ -133,7 +133,6 @@ app.get('/history/:id_user', authenticateToken, async (req, res) => {
             WHERE created_by = ?
         `, [id_user]);
 
-        // Récupérer les événements auxquels l'utilisateur est inscrit
         const [registeredEvents] = await db.query(`
             SELECT events.*, 
                 (SELECT COUNT(*) FROM registrations WHERE registrations.id_event = events.id_event) AS current_participants
@@ -149,6 +148,7 @@ app.get('/history/:id_user', authenticateToken, async (req, res) => {
     }
 });
 
+
 app.post('/events', csrf({ cookie: true }), async (req, res) => {
     console.log('Données reçues dans la requête POST :', req.body); 
 
@@ -158,17 +158,21 @@ app.post('/events', csrf({ cookie: true }), async (req, res) => {
         return res.status(400).json({ message: 'Tous les champs requis ne sont pas remplis.' });
     }
 
-    // Sanitize user input
-    const cleanEventName = sanitizeHtml(event_name);
-    const cleanDescription = sanitizeHtml(description);
-    const cleanLocation = sanitizeHtml(location);
-
     try {
         const query = `
             INSERT INTO events (event_name, description, location, date_event, max_participants, created_by, created_at)
             VALUES (?, ?, ?, ?, ?, ?, NOW())
         `;
-        await db.execute(query, [cleanEventName, cleanDescription, cleanLocation, date_event, max_participants, created_by]);
+
+        await db.execute(query, [
+            event_name.trim(),
+            description?.trim() || '',
+            location.trim(),
+            date_event,
+            max_participants,
+            created_by
+        ]);
+
         res.status(201).json({ message: 'Événement créé avec succès.' });
     } catch (err) {
         console.error('Erreur SQL :', err);
@@ -259,10 +263,8 @@ app.put('/events/:id', csrf({ cookie: true }), async (req, res) => {
         return res.status(400).json({ message: 'Tous les champs requis ne sont pas remplis.' });
     }
 
-    // Sanitize user input
-    const cleanEventName = sanitizeHtml(event_name);
-    const cleanDescription = sanitizeHtml(description);
-    const cleanLocation = sanitizeHtml(location);
+ 
+    
 
     try {
         const [rows] = await db.execute('SELECT * FROM events WHERE id_event = ? AND created_by = ?', [eventId, userId]);
@@ -291,7 +293,7 @@ app.get('/event/:id/participants', async (req, res) => {
     const { id } = req.params;
     const eventId = parseInt(id, 10); 
 
-    console.log(`🔍 Requête pour récupérer les détails de l'événement ID: ${eventId}`);
+    console.log(`Requête pour récupérer les détails de l'événement ID: ${eventId}`);
 
     if (isNaN(eventId)) {
         console.error("ID de l'événement invalide.");
@@ -351,25 +353,25 @@ app.get('/event/:id/participants', async (req, res) => {
 app.post('/event/:id/announce', csrf({ cookie: true }), async (req, res) => {
     const { id } = req.params;
     const { userId, message } = req.body;
+    const cleanMessage = xss(message);
 
     if (!userId || !message.trim()) {
         return res.status(400).json({ message: "Message vide ou utilisateur invalide." });
     }
 
-    // Sanitize message
-    const cleanMessage = sanitizeHtml(message);
-
     try {
         const [event] = await db.query("SELECT created_by FROM events WHERE id_event = ?", [id]);
         if (event.length === 0) {
-            console.warn(` Événement ID ${id} introuvable.`);
+            console.warn(`Événement ID ${id} introuvable.`);
             return res.status(404).json({ message: "Événement non trouvé." });
         }
 
         if (event[0].created_by !== userId) {
-            console.warn(` Accès refusé : l'utilisateur ID ${userId} n'est pas l'organisateur.`);
+            console.warn(`Accès refusé : l'utilisateur ID ${userId} n'est pas l'organisateur.`);
             return res.status(403).json({ message: "Seul l'organisateur peut poster une annonce." });
         }
+
+        const cleanMessage = xss(message);
 
         await db.execute(`
             CREATE TABLE IF NOT EXISTS announcements (
@@ -385,7 +387,7 @@ app.post('/event/:id/announce', csrf({ cookie: true }), async (req, res) => {
 
         await db.execute("INSERT INTO announcements (event_id, user_id, message) VALUES (?, ?, ?)", [id, userId, cleanMessage]);
 
-        res.status(201).json({ message, username: "Vous" });
+        res.status(201).json({ message: cleanMessage, username: "Vous" });
 
     } catch (err) {
         console.error("Erreur SQL :", err);
@@ -393,7 +395,7 @@ app.post('/event/:id/announce', csrf({ cookie: true }), async (req, res) => {
     }
 });
 
-// Expose CSRF token to frontend
+
 app.get('/csrf-token', csrf({ cookie: true }), (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
 });

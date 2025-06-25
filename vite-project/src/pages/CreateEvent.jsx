@@ -33,10 +33,11 @@ const CreateEvent = () => {
             alert('Erreur : utilisateur non connecté ou ID utilisateur manquant.');
             return;
         }
+        
     
         try {
             const token = localStorage.getItem('token');
-            // Fetch CSRF token
+
             const csrfRes = await fetch('http://localhost:5000/csrf-token', { credentials: 'include' });
             const { csrfToken } = await csrfRes.json();
             const response = await fetch('http://localhost:5000/events', {

@@ -14,6 +14,17 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+                
+        if (!formData.username || !formData.email || !formData.password) {
+        setError("Tous les champs sont obligatoires.");
+        return;
+        }
+
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+        if (!passwordRegex.test(formData.password)) {
+            alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.");
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:5000/register', {

@@ -8,7 +8,7 @@ const History = () => {
     const [createdEvents, setCreatedEvents] = useState([]);
     const [futureEvents, setFutureEvents] = useState([]);
     const [pastEvents, setPastEvents] = useState([]);
-    const [userRegistrations, setUserRegistrations] = useState([]); // ✅ Ajout des inscriptions
+    const [userRegistrations, setUserRegistrations] = useState([]); 
     const [editingEvent, setEditingEvent] = useState(null);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const History = () => {
             return;
         }
 
-        console.log("Requête vers : http://localhost:5000/history/" + user.id_user);
+        console.log("Requête du user:" + user.id_user);
 
         const fetchHistory = async () => {
             try {
@@ -28,7 +28,7 @@ const History = () => {
                     }
                 });
                 if (!response.ok) {
-                    throw new Error(`Erreur lors de la récupération des événements. Code: ${response.status}`);
+                 throw new Error(`Erreur: ${response.status}`);
                 }
                 const data = await response.json();
 
@@ -53,7 +53,6 @@ const History = () => {
                 setFutureEvents(sortByDate(future));
                 setPastEvents(sortByDate(past));
 
-                // ✅ Stocker les ID des événements auxquels l'utilisateur est inscrit
                 setUserRegistrations(data.registeredEvents.map(event => event.id_event));
             } catch (error) {
                 console.error('Erreur lors de la récupération des événements :', error);
