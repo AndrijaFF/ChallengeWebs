@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/Authcontext';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -23,18 +23,18 @@ const Login = () => {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
                 login(data.user);
-                alert('Connexion réussie !');
+                alert('Connexion réussie');
                 navigate('/'); 
             } else if (response.status === 401) {
                 setError('Email ou mot de passe incorrect.');
             } else if (response.status === 400) {
                 setError('Tous les champs sont requis.');
             } else {
-                setError('Une erreur inattendue est survenue.');
+                setError('Une erreur inattendue est survenue');
             }
         } catch (err) {
             console.error('Erreur réseau :', err);
-            setError('Impossible de se connecter au serveur. Vérifiez votre connexion.');
+            setError('Impossible de se connecter au serveur');
         }
     };
 

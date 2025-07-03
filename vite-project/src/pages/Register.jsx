@@ -6,7 +6,6 @@ const Register = () => {
         username: '',
         email: '',
         password: '',
-        userType: 'participant',
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -50,42 +49,43 @@ const Register = () => {
     };
 
     return (
-        <form class="form-register" onSubmit={handleSubmit}>
-            <h2>Inscription</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <input
-                class="input-info"
-                type="text"
-                placeholder="Nom d'utilisateur"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                required
-            />
-            <input
-                class="input-info"
-                type="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-            />
-            <input
-                class="input-info"
-                type="password"
-                placeholder="Mot de passe"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-            />
-            <select class="input-info"
-                value={formData.userType}
-                onChange={(e) => setFormData({ ...formData, userType: e.target.value })}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <form className="form-register" onSubmit={handleSubmit} style={{ minHeight: '420px' }}>
+                <h2>Inscription</h2>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <input
+                    className="input-info"
+                    type="text"
+                    placeholder="Nom d'utilisateur"
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    required
+                />
+                <input
+                    className="input-info"
+                    type="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                />
+                <input
+                    className="input-info"
+                    type="password"
+                    placeholder="Mot de passe"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                />
+                <button className="button" type="submit" style={{ marginTop: '30px' }}>S'inscrire</button>
+            </form>
+            <span
+                style={{ color: '#359DFF', cursor: 'pointer', fontWeight: 500, marginTop: '18px', textAlign: 'center' }}
+                onClick={() => navigate('/login')}
             >
-                <option value="participant">Participant</option>
-                <option value="organisateur">Organisateur</option>
-            </select>
-            <button class="button" type="submit">S'inscrire</button>
-        </form>
+                Vous avez déjà un compte ?
+            </span>
+        </div>
     );
 };
 

@@ -20,7 +20,7 @@
 .history-section {
     flex: 1;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: rgba(89,199,246,0.3);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     min-width: 30%;
@@ -28,9 +28,9 @@
 
 .history-section h2 {
     font-size: 1.5rem;
-    color: #ffc267;
+    color: #224553 !important;
     margin-bottom: 15px;
-    border-bottom: 2px solid #ffc267;
+    border-bottom: 2px solid #224553 !important;
     padding-bottom: 5px;
     text-align: center;
 }
@@ -89,7 +89,7 @@
 
 .no-events {
     text-align: center;
-    color: #888;
+    color: #224553 !important;
     font-size: 1.2rem;
     font-style: italic;
     padding: 10px;
@@ -150,4 +150,42 @@ body.darkmode .no-events {
     .history-section {
         width: 90%;
     }
+}
+
+/* Header */
+.header {
+  background-color: #71B7FF !important;
+  color: #fff !important;
+}
+
+/* Boutons principaux */
+button, .btn-primary {
+  background-color: #71B7FF !important;
+  color: #fff !important;
+}
+button:hover, .btn-primary:hover {
+  background-color: #305BA6 !important;
+}
+
+/* Cartes et fonds */
+.card, .event-card, .box, .container {
+  background-color: #E6E6E6 !important;
+  color: #232E60 !important;
+}
+
+/* Titres */
+h1, h2, h3, .main-title {
+  color: #232E60 !important;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Texte secondaire */
+.text-secondary, .subtitle, .label, label {
+  color: #224653 !important;
+}
+
+/* Success, validation */
+.success, .valid, .badge-success {
+  background-color: #59FC8B !important;
+  color: #232E60 !important;
 }

@@ -74,3 +74,41 @@
         flex: 1 1 100%; 
     }
 }
+
+/* Header */
+.header {
+  background-color: #71B7FF !important;
+  color: #fff !important;
+}
+
+/* Boutons principaux */
+button, .btn-primary {
+  background-color: #71B7FF !important;
+  color: #fff !important;
+}
+button:hover, .btn-primary:hover {
+  background-color: #305BA6 !important;
+}
+
+/* Cartes et fonds */
+.card, .event-card, .box, .container {
+  background-color: #E6E6E6 !important;
+  color: #232E60 !important;
+}
+
+/* Titres */
+h1, h2, h3, .main-title {
+  color: #232E60 !important;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Texte secondaire */
+.text-secondary, .subtitle, .label, label {
+  color: #224653 !important;
+}
+
+/* Success, validation */
+.success, .valid, .badge-success {
+  background-color: #59FC8B !important;
+  color: #232E60 !important;
+}

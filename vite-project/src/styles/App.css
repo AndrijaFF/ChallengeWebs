@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -14,11 +15,14 @@ body {
 
 header {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+    width: 100%;
+    height: 60px;
+    min-height: 60px;
+    padding: 0 32px;
+    box-sizing: border-box;
+    background-color: #71B7FF;
 }
 
 header h1 {
@@ -120,76 +124,6 @@ header span {
   outline: none;
 }
 
-.darkmode-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin-right:15px ;
-  background-color: #ffffff;
-  border: 2px solid #333;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
-  font-size: 18px;
-  color: #333;
-  margin-left: 15px ;
-}
-
-.darkmode-button:hover {
-  background-color: #333;
-  color: #ffffff;
-  border-color: #ffffff;
-  transform: scale(1.1);
-}
-
-.darkmode-button.active {
-  background-color: #333;
-  color: #ffffff;
-  border-color: #ffffff;
-}
-
-body.darkmode {
-  background-color: #121212; 
-  color: #ffffff; 
-}
-
-body.darkmode header {
-  background-color: #1e1e1e; 
-  border-bottom: 1px solid #444;
-}
-
-body.darkmode header h1 {
-  color: #ffffff; 
-}
-
-body.darkmode header span {
-  color: #ffffff; 
-}
-
-body.darkmode .button {
-  background-color: #333;
-  color: #ffffff;
-}
-
-body.darkmode .button:hover {
-  background-color: #555;
-}
-
-body.darkmode .darkmode-button {
-  background-color: #ffffff;
-  color: #ffffff;
-}
-
-.darkmode-layer, .darkmode-toggle {
-  z-index: 500;
-}
-
-body.darkmode .darkmode-button:hover {
-  background-color: #333;
-  color: #ffffff; 
-}
 
 form {
   display: flex;
@@ -436,7 +370,7 @@ p:last-child {
 .participants-list {
     list-style: none;
     padding: 0;
-    background: #f8f8f8;
+    background: rgba(89,199,246,0.3) !important;
     padding: 15px;
     border-radius: 8px;
 }
@@ -473,7 +407,7 @@ p:last-child {
   display: flex;
   flex-direction: column; 
   gap: 10px;
-  background: #fef3e6;
+  background: rgba(89,199,246,0.3) !important;
   padding: 15px;
   border-radius: 8px;
   overflow-y: auto;
@@ -549,8 +483,8 @@ p:last-child {
 
 .button {
     display: inline-block;
-    background-color: #ffc267;
-    color: white;
+    background-color: #59C7F6 !important;
+    color: white !important;
     padding: 10px 15px;
     margin-top: 12px;
     font-size: 1rem;
@@ -562,7 +496,7 @@ p:last-child {
 }
 
 .button:hover {
-    background-color: #ffad32;
+    background-color: #178FFF !important;
     transform: scale(1.05);
 }
 
@@ -575,8 +509,8 @@ p:last-child {
 }
 
 .details-button {
-    background: linear-gradient(135deg, #ffad32, #ffc267);
-    color: white;
+    background: #E2E2E2 !important;
+    color: #000 !important;
     padding: 10px 15px;
     border-radius: 6px;
     font-size: 1rem;
@@ -584,10 +518,12 @@ p:last-child {
     margin-top: 10px;
     display: inline-block;
     transition: all 0.3s ease-in-out;
+    border: none;
 }
 
 .details-button:hover {
-    background: linear-gradient(135deg, #ff9700, #ffad32);
+    background: #bdbdbd !important;
+    color: #000 !important;
     transform: scale(1.05);
 }
 
@@ -687,7 +623,7 @@ p:last-child {
 @media screen and (max-width: 768px) {
   body {
     font-size: 14px;
-    padding: 0;
+    padding: 0 0 60px 0 !important;
     margin: 0;
     overflow-x: hidden;
     width: 100vw;
@@ -716,10 +652,9 @@ p:last-child {
   }
 
   header {
-    flex-direction: column;
-    align-items: flex-start;
+    height: auto;
+    min-height: unset;
     padding: 10px;
-    width: 100%;
   }
 
   header h1 {
@@ -794,7 +729,7 @@ p:last-child {
 
   .footer {
     font-size: 0.9rem;
-    padding: 10px;
+    padding: 30px 10px 30px 10px !important;
   }
 
   ul {
@@ -806,4 +741,208 @@ p:last-child {
     width: 98%;
     margin: 0 auto 10px auto;
   }
+
+  header, .header {
+    width: 100% !important;
+    min-width: 0 !important;
+    left: 0;
+    right: 0;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+  .footer, footer {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    left: 0;
+    right: 0;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .header-title {
+    margin-right: 10px;
+  }
+  .welcome-message {
+    margin-right: auto;
+    font-size: 0.95rem;
+  }
+}
+
+/* Header et footer */
+header, .header, footer, .footer {
+  background-color: rgba(23, 143, 255, 0.7) !important;
+  color: #fff;
+}
+
+/* Boutons principaux */
+button, .btn-primary {
+  background-color: var(--primary-blue) !important;
+  color: #fff !important;
+  border: none;
+}
+button:hover, .btn-primary:hover {
+  background-color: var(--secondary-blue) !important;
+}
+
+/* Boutons secondaires */
+.btn-secondary {
+  background-color: var(--light-grey) !important;
+  color: var(--secondary-blue) !important;
+  border: 1px solid var(--secondary-blue) !important;
+}
+.btn-secondary:hover {
+  background-color: var(--secondary-blue) !important;
+  color: #fff !important;
+}
+
+/* Cartes, backgrounds clairs */
+.card, .event-card, .box, .container, .content {
+  background-color: var(--light-grey) !important;
+  color: var(--dark-blue) !important;
+}
+
+/* Titres */
+h1, h2, h3, h4, h5, h6, .title, .main-title {
+  color: var(--dark-blue) !important;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Texte secondaire */
+.text-secondary, .subtitle, .label, label {
+  color: var(--dark-grey) !important;
+}
+
+/* Success, validation */
+.success, .valid, .badge-success {
+  background-color: var(--success-green) !important;
+  color: var(--dark-blue) !important;
+}
+
+/* Liens */
+a {
+  color: var(--secondary-blue);
+}
+a:hover {
+  color: var(--dark-blue);
+}
+
+.header-title, .header-actions, .header-actions button, .header-actions .welcome-message, .header span, .header button, .header .button, .header .darkmode-button {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.welcome-message {
+  color: #fff !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+#createForm button[type="submit"] {
+  background-color: #59C7F6 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  margin-top: 18px;
+  transition: background 0.3s;
+}
+#createForm button[type="submit"]:hover {
+  background-color: #178FFF !important;
+  color: #fff !important;
+}
+
+.burger-menu {
+  display: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+.burger-menu img {
+  width: 32px;
+  height: 32px;
+}
+.close-mobile-nav {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1100;
+  padding: 0;
+  line-height: 1;
+}
+.mobile-nav {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background: rgba(89,199,246,0.9) !important;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  padding: 32px 24px 20px 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 180px;
+  align-items: flex-end;
+}
+@media screen and (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .burger-menu {
+    display: block !important;
+  }
+  .mobile-nav {
+    display: flex !important;
+  }
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.header-center {
+  flex: 1 1 0;
+  justify-content: center;
+  gap: 28px;
+}
+
+.header-right {
+  gap: 18px;
+}
+
+.header-title, .welcome-message, .header-center .button, .header-right .button {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 0 8px;
+}
+
+.header-center .button, .header-right .button {
+  background: none !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.header-center .button:hover, .header-right .button:hover {
+  background: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
 }

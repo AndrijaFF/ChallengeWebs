@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/Authcontext';
 import SearchBar from '../components/SearchBar'; 
 import EventCard from '../components/EventCard'; 
 import { useNavigate } from 'react-router-dom';

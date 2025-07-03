@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./vite-project
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./vite-project
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_USER=root
+      - DB_PASSWORD=20122004
+      - DB_NAME=eventude
+      - JWT_SECRET=2e1c9e2b-7b2a-4e2e-8c1a-3f7e2b1c9e2b-7b2a-4e2e-8c1a-3f7e2b1c9e2b
+      - PORT=5000
+      - CORS_ORIGIN=http://localhost:3000
+    restart: unless-stopped

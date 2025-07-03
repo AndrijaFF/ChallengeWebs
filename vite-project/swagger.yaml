@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: API ChallengeWebs
+  version: 1.0.0
+  description: Documentation de l'API pour le projet ChallengeWebs
+servers:
+  - url: http://localhost:5000
+    description: Serveur local
+paths:
+  /register:
+    post:
+      summary: Inscription d'un nouvel utilisateur
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Utilisateur inscrit avec succès
+        '400':
+          description: Champs manquants
+        '409':
+          description: Utilisateur ou email déjà existant
+  /login:
+    post:
+      summary: Connexion d'un utilisateur
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Connexion réussie
+        '400':
+          description: Champs manquants
+        '401':
+          description: Email ou mot de passe incorrect
+  /events:
+    get:
+      summary: Liste tous les événements
+      tags:
+        - Events
+      responses:
+        '200':
+          description: Liste des événements
+    post:
+      summary: Créer un événement
+      tags:
+        - Events
+      parameters:
+        - in: header
+          name: X-CSRF-Token
+          required: true
+          schema:
+            type: string
+          description: Token CSRF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_name:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: string
+                date_event:
+                  type: string
+                  format: date
+                max_participants:
+                  type: integer
+                created_by:
+                  type: integer
+      responses:
+        '201':
+          description: Événement créé avec succès
+        '400':
+          description: Champs manquants
+        '403':
+          description: Token CSRF manquant ou invalide
+  /events/{id_event}:
+    put:
+      summary: Modifier un événement
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: id_event
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: X-CSRF-Token
+          required: true
+          schema:
+            type: string
+          description: Token CSRF à obtenir via la route GET /csrf-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_name:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: string
+                date_event:
+                  type: string
+                  format: date
+                max_participants:
+                  type: integer
+                userId:
+                  type: integer
+      responses:
+        '200':
+          description: Événement modifié avec succès
+        '400':
+          description: Champs manquants ou invalides
+        '403':
+          description: Token CSRF manquant ou invalide
+        '404':
+          description: Événement non trouvé
+  /history/{id_user}:
+    get:
+      summary: Récupère l'historique des événements d'un utilisateur
+      tags:
+        - History
+      parameters:
+        - in: path
+          name: id_user
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Historique récupéré
+        '400':
+          description: ID utilisateur manquant
+        '404':
+          description: Utilisateur non trouvé
+  /registrations/user/{id_user}:
+    get:
+      summary: Liste les inscriptions d'un utilisateur
+      tags:
+        - Registrations
+      parameters:
+        - in: path
+          name: id_user
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des inscriptions
+  /csrf-token:
+    get:
+      summary: Récupère un token CSRF pour les requêtes protégées
+      tags:
+        - Sécurité
+      responses:
+        '200':
+          description: Token CSRF généré
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  csrfToken:
+                    type: string
+                    description: Le token CSRF à utiliser dans les requêtes protégées 

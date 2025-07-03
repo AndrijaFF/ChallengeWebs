@@ -6,12 +6,7 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <section className="hero">
-                <h1>Organisez et participez à des événements facilement</h1>
-                <p>Rejoignez notre plateforme pour découvrir des événements incroyables et rencontrer des passionnés.</p>
-                <button className="button" onClick={() => navigate('/events')}>Découvrir les événements</button>
-            </section>
-
+            
             <section className="why-choose-us">
                 <h2>Pourquoi utiliser Eventude ?</h2>
                 <div className="features">
@@ -32,7 +27,7 @@ const Home = () => {
 
             <section className="cta">
                 <h2>Prêt à rejoindre l'aventure ?</h2>
-                <button className="button" onClick={() => navigate('/register')}>Inscrivez-vous gratuitement</button>
+                <button className="buttonFF" onClick={() => navigate('/register')}>Inscrivez-vous gratuitement !</button>
             </section>
         </div>
     );

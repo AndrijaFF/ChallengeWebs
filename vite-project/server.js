@@ -9,6 +9,9 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import xss from 'xss';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import yaml from 'js-yaml';
 
 dotenv.config();
 
@@ -20,8 +23,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
+    origin: ['http://localhost:3000','http://localhost:5173'],
+    credentials: true
 }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -37,17 +40,17 @@ console.log('Connecté à la base de données.');
 
 // POST REGISTER
 app.post('/register', async (req, res) => {
-    const { username, email, password, userType } = req.body;
+    const { username, email, password } = req.body;
 
-    if (!username || !email || !password || !userType) {
+    if (!username || !email || !password) {
         return res.status(400).json({ message: 'Tous les champs sont requis.' });
     }
 
     try {
         
         const hashedPassword = await bcrypt.hash(password, 10);
-        const query = 'INSERT INTO users (username, email, password, user_type) VALUES (?, ?, ?, ?)';
-        await db.execute(query, [username, email, hashedPassword, userType]);
+        const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+        await db.execute(query, [username, email, hashedPassword]);
         res.status(201).json({ message: 'Utilisateur inscrit avec succès.' });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
@@ -68,14 +71,13 @@ app.post('/login', async (req, res) => {
     }
 
     try {
-        const query = 'SELECT id_user, username, email, user_type, password FROM users WHERE email = ?';
+        const query = 'SELECT id_user, username, email, password FROM users WHERE email = ?';
         const [rows] = await db.execute(query, [email]);
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
         }
 
         const user = rows[0];
-        // Compare password
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
@@ -86,7 +88,7 @@ app.post('/login', async (req, res) => {
 
         // Generate JWT
         const token = jwt.sign(
-            { id_user: user.id_user, username: user.username, user_type: user.user_type },
+            { id_user: user.id_user, username: user.username },
             JWT_SECRET,
             { expiresIn: '2h' }
         );
@@ -98,15 +100,15 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// JWT authentication middleware
+// JWT middleware
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.status(401).json({ message: 'Token manquant.' });
+    if (!token) return res.status(401).json({ message: 'Token manquant' });
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ message: 'Token invalide.' });
+        if (err) return res.status(403).json({ message: 'Token invalide' });
         req.user = user;
         next();
     });
@@ -278,7 +280,7 @@ app.put('/events/:id', csrf({ cookie: true }), async (req, res) => {
             SET event_name = ?, description = ?, location = ?, date_event = ?, max_participants = ?
             WHERE id_event = ?
         `;
-        await db.execute(query, [cleanEventName, cleanDescription, cleanLocation, date_event, max_participants, eventId]);
+        await db.execute(query, [event_name, description, location, date_event, max_participants, eventId]);
 
         const [updatedEvent] = await db.query('SELECT * FROM events WHERE id_event = ?', [eventId]);
         res.status(200).json(updatedEvent[0]);
@@ -399,6 +401,10 @@ app.post('/event/:id/announce', csrf({ cookie: true }), async (req, res) => {
 app.get('/csrf-token', csrf({ cookie: true }), (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
 });
+
+// Charger le fichier swagger.yaml
+const swaggerDocument = yaml.load(fs.readFileSync('./swagger.yaml', 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);

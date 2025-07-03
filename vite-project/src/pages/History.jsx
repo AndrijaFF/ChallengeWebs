@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/Authcontext';
 import EventCard from '../components/EventCard'; 
 import '../styles/History.css';
 
@@ -68,28 +68,26 @@ const History = () => {
     
             <div className="history-columns">
                 {/* Colonne des événements créés */}
-                {user?.user_type === 'organisateur' && (
-                    <div className="history-section" id="created-events">
-                        <h2>Événements créés</h2>
-                        {createdEvents.length > 0 ? (
-                            <ul className="history-list">
-                                {createdEvents.map(event => (
-                                    <EventCard 
-                                        key={event.id_event}
-                                        event={event}
-                                        user={user}
-                                        handleRegister={() => {}}
-                                        handleEdit={() => {}}
-                                        handleDelete={() => {}}
-                                        handleUpdate={() => {}}
-                                    />
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="no-events">Aucun événement créé.</p>
-                        )}
-                    </div>
-                )}
+                <div className="history-section" id="created-events">
+                    <h2>Événements créés</h2>
+                    {createdEvents.length > 0 ? (
+                        <ul className="history-list">
+                            {createdEvents.map(event => (
+                                <EventCard 
+                                    key={event.id_event}
+                                    event={event}
+                                    user={user}
+                                    handleRegister={() => {}}
+                                    handleEdit={() => {}}
+                                    handleDelete={() => {}}
+                                    handleUpdate={() => {}}
+                                />
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="no-events">Aucun événement créé.</p>
+                    )}
+                </div>
     
                 {/* Colonne des événements à venir */}
                 <div className="history-section" id="future-events">

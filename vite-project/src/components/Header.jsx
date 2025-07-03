@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Darkmode from 'darkmode-js';
+import { useAuth } from '../context/Authcontext';
+import menuIcon from '../img/menu.png';
 
 const Header = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const [darkmodeInstance, setDarkmodeInstance] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         console.log('Utilisateur connecté dans Header :', user); 
@@ -15,70 +15,66 @@ const Header = () => {
     const handleLogout = () => {
         logout();
         navigate('/login');
+        setMenuOpen(false);
     };
 
+    // Fermer le menu lors d'un resize desktop
     useEffect(() => {
-        const options = {
-            mixColor: '#fff',
-            backgroundColor: '#fff',
-            saveInCookies: true,
-            autoMatchOsTheme: true,
+        const handleResize = () => {
+            if (window.innerWidth > 768) setMenuOpen(false);
         };
-
-        const darkmode = new Darkmode(options);
-        setDarkmodeInstance(darkmode);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const toggleDarkMode = () => {
-        if (darkmodeInstance) {
-            darkmodeInstance.toggle();
-        }
-    };
+    const navLinks = user ? (
+        <>
+            <button className="button" onClick={() => {navigate('/events'); setMenuOpen(false);}}>
+                Liste des événements
+            </button>
+            <button className="button" onClick={() => {navigate('/create-event'); setMenuOpen(false);}}>
+                Créer un événement
+            </button>
+            <button className="button" onClick={() => {navigate('/history'); setMenuOpen(false);}}>
+                Vos événement
+            </button>
+        </>
+    ) : (
+        <>
+            <button className="button" onClick={() => {navigate('/register'); setMenuOpen(false);}}>
+                Inscription
+            </button>
+            <button className="button" onClick={() => {navigate('/login'); setMenuOpen(false);}}>
+                Connexion
+            </button>
+        </>
+    );
 
     return (
         <header className="header">
-            <h1 className="header-title" onClick={() => navigate('/')}>
-                EVENTUDE
-            </h1>
-            <div className="header-actions">
-                {user ? (
-                    <>
-                        <button className="button" onClick={() => navigate('/events')}>
-                            Liste des événements
-                        </button>
-                        {user?.user_type === 'organisateur' && (
-                            <button className="button" onClick={() => navigate('/create-event')}>
-                                Créer un événement
-                            </button>
-                        )}
-                    {}
-                    <button className="button" onClick={() => navigate('/history')}>
-                        Vos événement
-                    </button>
-                        <button
-                            className="darkmode-button"
-                            onClick={toggleDarkMode}
-                            title="Activer/Désactiver le mode sombre"
-                        >
-                            🌓
-                        </button>
-                        <span className="welcome-message">Bienvenue, {user.username}</span>
-                        <button onClick={handleLogout} className="button">
-                            Déconnexion
-                        </button>
-
-                    </>
-                ) : (
-                    <>
-                        <button className="button" onClick={() => navigate('/register')}>
-                            Inscription
-                        </button>
-                        <button className="button" onClick={() => navigate('/login')}>
-                            Connexion
-                        </button>
-                    </>
-                )}
+            <div className="header-left">
+                <h1 className="header-title" onClick={() => navigate('/')}>EVENTUDE</h1>
             </div>
+            <div className="header-center desktop-nav">
+                {navLinks}
+            </div>
+            {user && (
+                <div className="header-right desktop-nav">
+                    <span className="welcome-message">Bienvenue, {user.username}</span>
+                    <button onClick={handleLogout} className="button">Déconnexion</button>
+                </div>
+            )}
+            <div className="burger-menu" onClick={() => setMenuOpen(!menuOpen)}>
+                <img src={menuIcon} alt="Menu" />
+            </div>
+            {menuOpen && (
+                <div className="mobile-nav">
+                    <button className="close-mobile-nav" onClick={() => setMenuOpen(false)}>&times;</button>
+                    {user && <span className="welcome-message">Bienvenue, {user.username}</span>}
+                    {navLinks}
+                    {user && <button onClick={handleLogout} className="button">Déconnexion</button>}
+                </div>
+            )}
         </header>
     );
 };
